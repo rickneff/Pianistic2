@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+</head>
+<body>
+  <div>
+    This is the index<br/>
+  </div>
+  <hr/>
+  <div>
+    <h2>GET Tests</h2>
+    <p>GET requests will retrieve information from the DB without
+    making any modifications.</p>
+    <a href="./getpiano?id=2">Lookup Piano by id</a><br/>
+    <a href="./getpiano?id=999">Lookup with non-existent id</a><br/>
+    <a href="./getpiano?inventory_id=147381">Lookup Piano by inventory_id</a><br/>
+    <a href="./getpiano?inventory_id=xxxxxx">Lookup with non-existent inventory_id</a><br/>
+    <a href="./getpiano">Lookup with no identifier</a><br/>
+    <a href="./getpiano?njf983jkds">Lookup with malformed query</a><br/>
+  </div>
+  <hr/>
+  <p>The following sections are waiting for the insert, update, and delete
+  functions to be added to the data handler. (Along with the appropriate
+  resource handlers.)</p>
+  <div>
+    <h2>POST Tests</h2>
+    <p>POST requests will add todos and service records.</p>
+    Put a form here, so that we can POST
+  </div>
+  <hr/>
+  <div>
+    <h2>PUT Tests</h2>
+    <p>PUT requests will add or update piano records.</p>
+    PUT will need a form or AJAX (form is way easier)
+  </div>
+  <hr/>
+  <div>
+    <h2>DELETE Tests</h2>
+    <p>DELETE requests will delete pianos and other records from the DB</p>
+    Delete will need a form or AJAX (see above)
+  </div>
+</body>
+</html>

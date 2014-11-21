@@ -1,0 +1,71 @@
+This should be deleted once the front end names have been changed to match.
+
+All primary keys = id (common convention, and more consistent)
+_id for all foreign key references (consistency)
+remove all reference to BYU-I (unecessary, portability)
+
+Do we really need to prefix type, make, model, condition, and
+service_history with piano_?
+
+piano
+*	piano_pk			id
+*	byui_inventory_id		inventory_id
+	make_id				make_id
+	model_id			model_id
+	type_id				type_id
+	mfg_serial			mfg_serial
+	year				year
+	building_id			building_id
+*	room_number			room
+#	room_type_id			room_type_id
+	condition_id			condition_id
+*	general_piano_notes		notes
+	cost				cost
+	value				value
+**	next_service_interval		service_interval
+*	previous_building_if_moved	previous_building_id
+*	previous_room_if_moved		previous_room
+*	future_service_notes		service_notes
+*	date_of_last_service		last_service_date
+
+piano_type
+*	type_id				id
+*	type_text			name (or text)
+
+piano_make
+*	make_id				id
+*	make_name			name (or text)
+
+piano_model
+*	model_id			id
+*	model_name			name (or text)
+*	model_description		description
+
+piano_condition
+*	condition_id			id
+*	condition_text			name (or text)
+
+building
+*	byui_building_id		id
+*	building_name			name (or text)
+
+room_type
+*	room_type_id			id
+*	room_type_text			name (or text)
+
+piano_service_history
+*	job_id_pk			id
+*	piano_pk			piano_id
+#	date_of_service			date_of_service (maybe just date)
+*	action_performed		action (or service)
+*	action_preformed_by		technician (or other job title)
+*#	current_relative_humidity	humidity
+*#	current_relative_temperature	temperature
+	pitch				pitch
+
+todo
+*	job_id_pk			id
+*	piano_pk			piano_id
+	building_id			building_id
+*	room_number			room
+*	todo_notes			notes
