@@ -404,9 +404,21 @@ class Piano(object):
 # pianos, then map Piano() to the list of ids.
 
 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# We need a function that returns a complete listing of
-# pianos, to send to the client.
+def piano_list():
+	# Return a JSON string consisting of all pianos
+	con = db.connect(dbfile)
+	cur = con.cursor()
+
+	sql = "SELECT id FROM piano;"
+
+	cur.execute(sql)
+
+	pianos = [Piano(id=i[0]) for i in cur.fetchall()]
+	json = '{' + ', '.join([str(i) for i in pianos]) + '}'
+
+	con.close()
+
+	return json
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -597,5 +609,10 @@ if __name__ == "__main__":
 	sql = "DELETE FROM piano WHERE inventory_id = 666;"
 	px.cur.execute(sql)
 	px.con.commit()
+
+	print ""
+
+	print "---------------- Piano List -----------------"
+	print piano_list()
 
 	print ""
