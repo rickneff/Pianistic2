@@ -222,14 +222,14 @@ class Piano(object):
 	def write(self):
 		# Check if this is already in the DB,
 		# and send to the appropriate handler
-		if id in dir(self):
+		if "id" in dir(self):
 			sql = "SELECT id FROM piano WHERE id = ?;"
 			self.cur.execute(sql, (self.id,))
 
 			if self.cur.fetchall():
 				self._update()
 			else:
-				raise RecordNotFoundError("Tried to update nonexistent record")
+				raise RecordNotFoundError("Cannot update nonexistent record")
 		else:
 			self._insert()
 
@@ -359,9 +359,40 @@ class Piano(object):
 
 	# Update an existing record
 	def _update(self):
-		# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		# Update any fields included in object (except id)
-		pass
+		attr = {
+			"inventory_id"      : "inventory_id=?, ",
+			"make"              : "make_id=(SELECT id FROM piano_make WHERE value=?), ",
+			"model"             : "model_id=(SELECT id FROM piano_model WHERE value=?), ",
+			"type"              : "type_id=(SELECT id FROM piano_type WHERE value=?), ",
+			"mfg_serial"        : "mfg_serial=?, ",
+			"year"              : "year=?, ",
+			"building"          : "building_id=(SELECT id FROM building WHERE value=?), ",
+			"room"              : "room=?, ",
+			"room_type"         : "room_type_id=(SELECT id FROM room_type WHERE value=?), ",
+			"condition"         : "condition_id=(SELECT id FROM piano_condition WHERE value=?), ",
+			"notes"             : "notes=?, ",
+			"cost"              : "cost=?, ",
+			"value"             : "value=?, ",
+			"service_interval"  : "service_interval=?, ",
+			"previous_building" : "previous_building_id=(SELECT id FROM building WHERE value=?), ",
+			"previous_room"     : "previous_room=?, ",
+			"service_notes"     : "service_notes=?, ",
+			"last_service_date" : "last_service_date=date(?), ",
+		}
+
+		sql = "UPDATE piano SET "
+
+		args = tuple()
+
+		for k, v in attr.iteritems():
+			if k in dir(self):
+				sql += v
+				args += (getattr(self, k),)
+
+		sql = sql[:-2] + " WHERE id=?;"
+
+		args += (self.id,)
+		self.cur.execute(sql, args)
 		self.con.commit()
 
 # *****************************************************************
@@ -478,7 +509,7 @@ if __name__ == "__main__":
 
 
 	# Test write new piano and delete
-	print "------------- Insert and Delete -------------"
+	print "-------- Insert, Update, and Delete ---------"
 	attribs = {
 		"inventory_id":666,
 		"make":"Knabe",
@@ -510,7 +541,16 @@ if __name__ == "__main__":
 
 	if not failed:
 		print "Write successful"
+	else:
+		print "Write failed"
 
+	px = Piano(json = '{"id":' + str(px.id) + ', "make":"Yamaha"}')
+	px.write()
+	px = Piano(inventory_id = 666)
+	if px.make == "Yamaha":
+		print "Update successful"
+	else:
+		print "Update failed"
 
 	px.delete()
 
@@ -525,27 +565,37 @@ if __name__ == "__main__":
 
 	# Test the NonUniqueSelectorError exception
 	print "---------- NonUniqueSelector Error ----------"
+
+	attribs = {
+		"inventory_id":666,
+		"make":"Knabe",
+		"model":"D",
+		"type":"Grand",
+		"mfg_serial":"A94TSG",
+		"building":"Benson",
+		"room":"A12",
+		"room_type":"Lounge",
+		"condition":"Good",
+	}
+	json = "{"
+	for k, v in attribs.iteritems():
+		json += '"' + k + '":"' + str(v) + '", '
+	json = json[:-2] + "}"
+	px = Piano(json = json)
+	# Write 2 of these, with the same inventory_id
+	px.write()
+	px.write()
+
+	try:
+		px = Piano(inventory_id = 666)
+		raise Exception("This should have failed, with a NonUniqueSelector Error")
+	except NonUniqueSelectorError as e:
+		print "Caught exception:"
+		print "\tMessage: " + str(e[0])
+		print "\tData: " + str(e[1])
+
+	sql = "DELETE FROM piano WHERE inventory_id = 666;"
+	px.cur.execute(sql)
+	px.con.commit()
+
 	print ""
-	print "               Not Implemented"
-	print ""
-
-
-# This test will only work with an inventory_id that is non-unique.
-# Since no such records should ever be present, this test should
-# never pass, because there is no way to cause the conditions
-# required for the exception to be raised.
-
-# Perhaps, this test could be setup by adding two records with
-# duplicate inventory_ids and terminated by removing those
-# records.  It would be necessary, however, to ensure that this
-# does not accidentally remove other records.
-
-#	try:
-#		px = Piano()
-#		raise Exception("Failed to raise NonUniqueSelectorError")
-#	except NonUniqueSelectorError as e:
-#		print "Caught exception:"
-#		print "\tMessage: " + e[0]
-#		print "\tData:    " + str(e[1])
-
-
