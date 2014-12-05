@@ -421,6 +421,246 @@ def piano_list():
 	return json
 
 
+
+class ServiceRecord(object):
+# Instance variables:
+#	Variable Name		Database name		Contents
+#	id			id			Primary key in DB
+#	piano_id		piano_id		Piano ID for record
+#	date			date			Date of service
+#	action			action			Service performed
+#	technician		technician		Who performed the service
+#	humidity		humidity		Humidity at time of service
+#	temperature		temperature		Temperature at time of service
+#	pitch			pitch			Piano pitch at time of service
+
+	def __init__(self, id = None, json = None):
+		# Setup DB connection for this object
+		self.con = db.connect(dbfile)
+		self.cur = self.con.cursor()
+
+		if (id):
+			self.fromdb(id)
+		elif (json):
+			self.fromjson(json)
+
+	def __del__(self):
+		self.con.close()
+
+	def fromdb(self, id):
+		args = (id,)
+		sql =   "SELECT "                                     + \
+			"    id, "                                    + \
+			"    piano_id, "                              + \
+			"    date, "                                  + \
+			"    action, "                                + \
+			"    technician, "                            + \
+			"    humidity, "                              + \
+			"    temperature, "                           + \
+			"    pitch "                                  + \
+		        "  FROM "                                     + \
+			"    piano_service_history "                  + \
+			"  WHERE "                                    + \
+			"    id = ?;"
+
+		self.cur.execute(sql, args)
+
+		results = self.cur.fetchall()
+
+		if len(results) < 1:
+			raise RecordNotFoundError("No matching result",
+			                          {"id"          : id})
+		elif len(results) > 1:
+			raise NonUniqueSelectorError("Multiple results found",
+			                             {"id"           : id})
+
+		# Create and populate instance variables from database
+		# This must be the same order as the values in the
+		# SELECT statement.
+		(
+			self.id,
+			self.piano_id,
+			self.date,
+			self.action,
+			self.technician,
+			self.humidity,
+			self.temperature,
+			self.pitch,
+		) = results[0]
+
+	# Initializes the object with data from a json string
+	# (presumably passed in from the client).
+	def fromjson(self, json):
+		# Convert the JSON string into a dictionary
+		data = j.loads(json)
+
+		# Because we are not filtering, this could add attributes that
+		# are not normally part of this class.  It can also allow
+		# attributes to be skipped.  Since this does not always cause
+		# errors, we will not check for consistency here.
+		for k, v in data.iteritems():
+			setattr(self, k, v)
+
+	# This returns a string that could be used to create an
+	# identical object to this one.
+	def __repr__(self):
+		return "ServiceRecord(json = '" + str(self) + "')";
+
+	# This returns a JSON string representation of
+	# this object (to send to the client).
+	def __str__(self):
+		json = "{"
+
+		for i in [
+				"id",
+				"piano_id",
+				"date",
+				"action",
+				"technician",
+				"humidity",
+				"temperature",
+				"pitch",
+			]:
+			if i in self.__dict__:
+				v = getattr(self, i)
+				json += '"' + i + '":'
+				if isinstance(v, (int, long, float)):
+					json += str(v)
+				else:
+					json += '"' + v + '"'
+				json += ", "
+
+		# Take off the following comma, if there is one
+		# then add the closing brace.
+		if json[-2:] == ', ':
+			json = json[:-2] + "}"
+
+		return json
+	
+	# Write this object to the DB
+	def write(self):
+		# Check if this is already in the DB,
+		# and send to the appropriate handler
+		if "id" in dir(self):
+			sql = "SELECT id FROM piano_service_history WHERE id = ?;"
+			self.cur.execute(sql, (self.id,))
+
+			if self.cur.fetchall():
+				self._update()
+			else:
+				raise RecordNotFoundError("Cannot update nonexistent record")
+		else:
+			self._insert()
+
+	# Delete a record from the DB
+	def delete(self):
+		if "id" not in dir(self):
+			raise RecordNotFoundError("Cannot delete record without id")
+
+		sql = "DELETE FROM piano_service_history WHERE id = ?;"
+		self.cur.execute(sql, (self.id,))
+
+		self.con.commit()
+
+	# Insert a new record
+	def _insert(self):
+		# Make sure all necessary data is present
+		error = ""
+
+		# Mandatory attributes
+		attr = [
+			"piano_id",
+			"action",
+			"technician",
+		]
+
+		for i in attr:
+			if i not in dir(self):
+				error += i + ", "
+
+		# Throw error if we are missing anything
+		if error:
+			error = error[:-2] + " not found"
+			raise InsufficientDataError(error)
+
+
+		# Set defaults
+		# Default attributes
+		default = {
+			"date"			: "now",
+			"humidity"		: "NULL",
+			"temperature"		: "NULL",
+			"pitch"			: "NULL",
+		}
+
+		for k, v in default.iteritems():
+			setattr(self, k, getattr(self, k, v))
+
+		# Prepare insertion SQL statement (the parenths automatically concat)
+		sql  = (
+			"INSERT INTO piano_service_history ("
+			"  piano_id, "
+			"  date, "
+			"  action, "
+			"  technician, "
+			"  humidity, "
+			"  temperature, "
+			"  pitch "
+			") "
+			"VALUES ("
+			"  ?, "							# piano_id
+			"  date(?), "						# date
+			"  ?, "							# action
+			"  ?, "							# technician
+			"  ?, "							# humidity
+			"  ?, "							# temperature
+			"  ?"							# pitch
+			");")
+
+		# Setup the argument list
+		args = (
+			self.piano_id,
+			self.date,
+			self.action,
+			self.technician,
+			self.humidity,
+			self.temperature,
+			self.pitch,
+		)
+
+		# Finally, insert and commit
+		self.cur.execute(sql, args)
+		self.con.commit()
+
+	# Update an existing record
+	def _update(self):
+		attr = {
+			"piano_id"    : "piano_id=?, ",
+			"date"        : "date=date(?), ",
+			"action"      : "action=?, ",
+			"technician"  : "technician=?, ",
+			"humidity"    : "humidity=?, ",
+			"temperature" : "temperature=?, ",
+			"pitch"       : "pitch=?, ",
+		}
+
+		sql = "UPDATE piano_service_history SET "
+
+		args = tuple()
+
+		for k, v in attr.iteritems():
+			if k in dir(self):
+				sql += v
+				args += (getattr(self, k),)
+
+		sql = sql[:-2] + " WHERE id=?;"
+
+		args += (self.id,)
+		self.cur.execute(sql, args)
+		self.con.commit()
+		
+
+
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # We need objects for service history records and todos, as
 # well as functions for generating lists of each.
@@ -614,5 +854,75 @@ if __name__ == "__main__":
 
 	print "---------------- Piano List -----------------"
 	print piano_list()
+
+	print ""
+
+
+	# Test retrieving service record from DB
+	print "----------- Select Service Record -----------"
+	sr = ServiceRecord(id = 1)
+	print sr
+
+	print ""
+
+
+	# Test creating new service record, modifying it, then
+	# deleting it
+	print "---------- Interact Service Record ----------"
+	record = {
+		"piano_id":4,
+		"date":"2014-12-05",
+		"action":"Replaced pads",
+		"technician":"Me!",
+		"humidity":70,
+		"temperature":72,
+		"pitch":43.5,
+	}
+
+	json = "{"
+	for k, v in record.iteritems():
+		json += '"' + k + '":"' + str(v) + '", '
+	json = json[:-2] + "}"
+
+	sr = ServiceRecord(json = json)
+
+	if (cmp(j.loads(json), j.loads(str(sr)))):
+		print "Failed to produce record from json"
+		print "json:", json
+		print "str(sr):", str(sr)
+	else:
+		print "Successfully loaded record from JSON"
+
+	sr.write()
+	print "Successfully wrote record"
+
+	sql = "SELECT id FROM piano_service_history WHERE piano_id=? AND action=? AND technician=?;"
+	args = (sr.piano_id, sr.action, sr.technician)
+
+	sr.cur.execute(sql, args)
+	id = sr.cur.fetchall()[0][0]
+
+	srx = ServiceRecord(id = id)
+
+	if (str(sr) == str(srx)):
+		print "Successfully read record"
+
+	srx.technician = "Not me anymore."
+	srx.write()
+
+	sr = ServiceRecord(id = id)
+
+	if (sr.technician == "Not me anymore."):
+		print "Successfully updated record"
+	else:
+		print "Update failed"
+
+	sr.delete()
+
+	try:
+		sr = ServiceRecord(id = id)
+		raise Exception("Delete must have failed", {"id":id})
+	except Exception as e:
+		print "Successfully deleted record"
 
 	print ""
