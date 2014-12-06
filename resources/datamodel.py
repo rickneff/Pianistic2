@@ -421,7 +421,6 @@ def piano_list():
 	return json
 
 
-
 class ServiceRecord(object):
 # Instance variables:
 #	Variable Name		Database name		Contents
@@ -659,7 +658,76 @@ class ServiceRecord(object):
 		self.cur.execute(sql, args)
 		self.con.commit()
 		
+class ServiceRecords(object):
+# Loads and encapsulates a list of ServiceRecords that match
+# certain criteria.
 
+	# Pass this a dict of search criteria that must be met
+	def __init__(self, criteria = {}):
+		# We will need a DB connection for the initial search
+		con = db.connect(dbfile)
+		cur = con.cursor()
+
+		# We will allow criteria to be a JSON object, by
+		# converting it to a dict if it is a string
+		if (type(criteria) == type(str())):
+			criteria = j.loads(criteria)
+
+		fields = {
+			"piano_id"    : "piano_id=?, ",
+			"date"        : "date=date(?), ",
+			"action"      : "action=?, ",
+			"technician"  : "technician=?, ",
+			"humidity"    : "humidity=?, ",
+			"temperature" : "temperature=?, ",
+			"pitch"       : "pitch=?, ",
+		}
+
+		sql  = "SELECT id FROM piano_service_history WHERE "
+		args = ()
+
+		for k, v in criteria.iteritems():
+			if k in fields:
+				sql  += fields[k]
+				args += (v,)
+
+		if len(criteria) == 0:
+			sql = "SELECT id FROM piano_service_history  "
+
+		sql = sql[:-2] + " ORDER BY date DESC;"
+
+		cur.execute(sql, args)
+		ids = cur.fetchall()
+
+		# That is all we needed from the DB
+		con.close()
+
+		self.records = []
+		for id in ids:
+			self.records.append(ServiceRecord(id = id[0]))
+
+		self.criteria = criteria
+
+	def __repr__(self):
+		return "ServiceRecords(" + repr(self.criteria) + ")"
+
+	def __str__(self):
+		json = '{'
+		for i in self.records:
+			json += str(i) + ", "
+
+		if len(self.records) > 0:
+			json = json[:-2]
+
+		json += "}"
+
+		return json
+
+	def __getitem__(self, index):
+		return self.records[index]
+
+	def __len__(self):
+		return len(self.records)
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # We need objects for service history records and todos, as
@@ -924,5 +992,85 @@ if __name__ == "__main__":
 		raise Exception("Delete must have failed", {"id":id})
 	except Exception as e:
 		print "Successfully deleted record"
+
+	print ""
+
+
+	# Test various ServiceRecords things
+	print "--------- Interact Service Records ----------"
+	records = [
+	{
+		u"piano_id":666,
+		u"date":"2014-12-01",
+		u"action":"Replaced pads",
+		u"technician":"Me!",
+		u"humidity":50,
+		u"temperature":70,
+		u"pitch":40.1,
+	},
+	{
+		u"piano_id":666,
+		u"date":"2014-12-05",
+		u"action":"Replaced pads",
+		u"technician":"Me!",
+		u"humidity":75,
+		u"temperature":65,
+		u"pitch":40.2,
+	},
+	{
+		u"piano_id":666,
+		u"date":"2014-12-02",
+		u"action":"Replaced pads",
+		u"technician":"Me!",
+		u"humidity":90,
+		u"temperature":75,
+		u"pitch":40.3,
+	}]
+
+
+
+	for i in records:
+		json = "{"
+		for k, v in i.iteritems():
+			json += '"' + k + '":"' + str(v) + '", '
+		json = json[:-2] + "}"
+
+		ServiceRecord(json = json).write()
+	
+	srs = ServiceRecords({"piano_id":666})
+
+	success = True
+	if len(srs) == len(records):
+		tr = [records[1], records[2], records[0]]
+		for s, r in zip(srs, tr):
+			s = j.loads(str(s))
+			del s["id"]
+			if cmp(s, r):
+				success = False
+				print s
+				print r
+
+		if success:
+			print "Successfully loaded list of records"
+		else:
+			print "Failed to load the correct records"
+	else:
+		print "Failed to load the correct number of records"
+
+	date = "2014-12-32"
+	success = True
+	for i in srs:
+		if i.date > date:
+			success = False
+		date = i.date
+
+	if success:
+		print "Successfully read sorted list of records"
+	else:
+		print "Failed to sort records correctly"
+
+	sql = "DELETE FROM piano_service_history WHERE piano_id=666;"
+	srs[0].cur.execute(sql)
+	srs[0].con.commit()
 
 	print ""
