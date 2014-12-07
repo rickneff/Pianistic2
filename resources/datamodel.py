@@ -404,6 +404,10 @@ class Piano(object):
 # pianos, then map Piano() to the list of ids.
 
 
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# See the contructor for ServiceRecords
+# A JSON/dict could be used here to pass in constraints for
+# filtering, in the same way ServiceRecords does it.
 def piano_list():
 	# Return a JSON string consisting of all pianos
 	con = db.connect(dbfile)
@@ -659,7 +663,7 @@ class ServiceRecord(object):
 		self.con.commit()
 		
 class ServiceRecords(object):
-# Loads and encapsulates a list of ServiceRecords that match
+# Loads and encapsulates a list of ServiceRecord objects that match
 # certain criteria.
 
 	# Pass this a dict of search criteria that must be met
@@ -729,9 +733,221 @@ class ServiceRecords(object):
 	def __len__(self):
 		return len(self.records)
 
+
+class Todo(object):
+# Instance variables:
+#	Variable Name		Database name		Contents
+#	id			id			Primary key in DB
+#	piano_id		piano_id		Piano ID for record
+#	building		building_id->value	Building note refers to
+#	room			room			Room note refers to
+#	notes			notes			Actual note text
+	def __init__(self, id = None, json = None):
+		# Setup DB connection for this object
+		self.con = db.connect(dbfile)
+		self.cur = self.con.cursor()
+
+		if (id):
+			self.fromdb(id)
+		elif (json):
+			self.fromjson(json)
+
+	def __del__(self):
+		self.con.close()
+
+	def fromdb(self, id):
+		args = (id,)
+		sql =   "SELECT "                      + \
+			"    t.id, "                   + \
+			"    t.piano_id, "             + \
+			"    b.value, "                + \
+			"    t.room, "                 + \
+			"    t.notes "                 + \
+		        "  FROM "                      + \
+			"    todo AS t JOIN "          + \
+			"    building AS b "           + \
+			"  WHERE "                     + \
+			"    t.building_id = b.id AND" + \
+			"    t.id = ?;"
+
+		self.cur.execute(sql, args)
+
+		results = self.cur.fetchall()
+
+		if len(results) < 1:
+			raise RecordNotFoundError("No matching result",
+			                          {"id"          : id})
+		elif len(results) > 1:
+			raise NonUniqueSelectorError("Multiple results found",
+			                             {"id"           : id})
+
+		# Create and populate instance variables from database
+		# This must be the same order as the values in the
+		# SELECT statement.
+		(
+			self.id,
+			self.piano_id,
+			self.building,
+			self.room,
+			self.notes,
+		) = results[0]
+
+	# Initializes the object with data from a json string
+	# (presumably passed in from the client).
+	def fromjson(self, json):
+		# Convert the JSON string into a dictionary
+		data = j.loads(json)
+
+		# Because we are not filtering, this could add attributes that
+		# are not normally part of this class.  It can also allow
+		# attributes to be skipped.  Since this does not always cause
+		# errors, we will not check for consistency here.
+		for k, v in data.iteritems():
+			setattr(self, k, v)
+
+	# This returns a string that could be used to create an
+	# identical object to this one.
+	def __repr__(self):
+		return "Todo(json = '" + str(self) + "')";
+
+	# This returns a JSON string representation of
+	# this object (to send to the client).
+	def __str__(self):
+		json = "{"
+
+		for i in [
+				"id",
+				"piano_id",
+				"building",
+				"room",
+				"notes",
+			]:
+			if i in self.__dict__:
+				v = getattr(self, i)
+				json += '"' + i + '":'
+				if isinstance(v, (int, long, float)):
+					json += str(v)
+				else:
+					json += '"' + v + '"'
+				json += ", "
+
+		# Take off the following comma, if there is one
+		# then add the closing brace.
+		if json[-2:] == ', ':
+			json = json[:-2] + "}"
+
+		return json
+	
+	# Write this object to the DB
+	def write(self):
+		# Check if this is already in the DB,
+		# and send to the appropriate handler
+		if "id" in dir(self):
+			sql = "SELECT id FROM todo WHERE id = ?;"
+			self.cur.execute(sql, (self.id,))
+
+			if self.cur.fetchall():
+				self._update()
+			else:
+				raise RecordNotFoundError("Cannot update nonexistent record")
+		else:
+			self._insert()
+
+	# Delete a record from the DB
+	def delete(self):
+		if "id" not in dir(self):
+			raise RecordNotFoundError("Cannot delete record without id")
+
+		sql = "DELETE FROM todo WHERE id = ?;"
+		self.cur.execute(sql, (self.id,))
+
+		self.con.commit()
+
+	# Insert a new record
+	def _insert(self):
+		# Make sure all necessary data is present
+		error = ""
+
+		# Mandatory attributes
+		attr = [
+			"notes",
+		]
+
+		for i in attr:
+			if i not in dir(self):
+				error += i + ", "
+
+		# Throw error if we are missing anything
+		if error:
+			error = error[:-2] + " not found"
+			raise InsufficientDataError(error)
+
+
+		# Set defaults
+		# Default attributes
+		default = {
+			"piano_id"		: "NULL",
+			"building"		: "None",
+			"room"			: "NULL",
+		}
+
+		for k, v in default.iteritems():
+			setattr(self, k, getattr(self, k, v))
+
+		# Prepare insertion SQL statement (the parenths automatically concat)
+		sql  = (
+			"INSERT INTO todo ("
+			"  piano_id, "
+			"  building_id, "
+			"  room, "
+			"  notes "
+			") "
+			"VALUES ("
+			"  ?, "							# piano_id
+			"  (SELECT id FROM building WHERE value=?), "		# building_id
+			"  ?, "							# room
+			"  ?"							# notes
+			");")
+
+		# Setup the argument list
+		args = (
+			self.piano_id,
+			self.building,
+			self.room,
+			self.notes,
+		)
+
+		# Finally, insert and commit
+		self.cur.execute(sql, args)
+		self.con.commit()
+
+	# Update an existing record
+	def _update(self):
+		attr = {
+			"piano_id" : "piano_id=?, ",
+			"building" : "building_id=(SELECT id FROM building WHERE value=?), ",
+			"room"     : "room=?, ",
+			"notes"    : "notes=?, ",
+		}
+
+		sql = "UPDATE todo SET "
+
+		args = tuple()
+
+		for k, v in attr.iteritems():
+			if k in dir(self):
+				sql += v
+				args += (getattr(self, k),)
+
+		sql = sql[:-2] + " WHERE id=?;"
+
+		args += (self.id,)
+		self.cur.execute(sql, args)
+		self.con.commit()
+
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# We need objects for service history records and todos, as
-# well as functions for generating lists of each.
+# We need a list class for todos
+
 
 
 # Custom Exceptions ---------------------------------------------
@@ -1074,3 +1290,80 @@ if __name__ == "__main__":
 	srs[0].con.commit()
 
 	print ""
+
+
+	# Todo list tests
+	print "----------- Interact Todo Records -----------"
+	todos = [
+		{"piano_id":2, "notes":"This piano needs some serious work"},
+		{"building":"Perkins Hall", "notes":"This building needs some serious work"},
+		{"room":"2", "notes":"This room needs some serious work"},
+		{"notes":"Today has been an interesting day"},
+	]
+
+	for i in todos:
+		json = "{"
+		for k, v in i.iteritems():
+			json += '"' + k + '":"' + str(v) + '", '
+		json = json[:-2] + "}"
+
+		Todo(json = json).write()
+	
+	sql = "SELECT id FROM todo;"
+	srs[0].cur.execute(sql)
+	
+	ids = srs[0].cur.fetchall()
+
+	if len(ids) == len(todos):
+		print "Successfully wrote records"
+	else:
+		print "Record count mismatch"
+
+	records = 0
+	for i in ids:
+		todo = Todo(id = i[0])
+		for j in todos:
+			if Todo(id = i[0]).notes == j["notes"]:
+				records += 1
+
+	if records == len(ids):
+		print "Successfully read all records"
+	else:
+		print "Failed to find all records"
+
+	for i in ids:
+		Todo(id = i[0]).delete()
+
+	sql = "SELECT id FROM todo;"
+	srs[0].cur.execute(sql)
+	ids = srs[0].cur.fetchall()
+
+	if len(ids) > 0:
+		print "Failed to delete records"
+	else:
+		print "Successfully deleted records"
+
+	print ""
+
+
+
+
+'''
+We can abstract out a bunch of stuff, because most of the DB reader classes
+use very similar code.  If we can take out the table specific stuff, we can
+make a parent class that handles most of the DB access.
+
+To do this, each child class will need to contain information about how its
+table is arranged.  This information will be used by the parent class to
+handle selecting, inserting, and updating.
+
+DBRecord(object)
+members:
+	sql query for selecting (including dereferencing)
+	list of columns, by name
+	defaults for insert (anything not here should be mandatory)
+	sql query for inserting (including referencing)
+	sql query dict for updating (including referencing)
+
+A similar parent might be created for the record list objects as well.
+'''
