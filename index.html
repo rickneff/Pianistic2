@@ -12,12 +12,34 @@
     <h2>GET Tests</h2>
     <p>GET requests will retrieve information from the DB without
     making any modifications.</p>
-    <a href="./getpiano?id=2">Lookup Piano by id</a><br/>
-    <a href="./getpiano?id=999">Lookup with non-existent id</a><br/>
-    <a href="./getpiano?inventory_id=147381">Lookup Piano by inventory_id</a><br/>
-    <a href="./getpiano?inventory_id=xxxxxx">Lookup with non-existent inventory_id</a><br/>
-    <a href="./getpiano">Lookup with no identifier</a><br/>
-    <a href="./getpiano?njf983jkds">Lookup with malformed query</a><br/>
+    <h4>Individual Pianos</h4>
+    <a href="./piano?id=2">Lookup by id</a><br/>
+    <a href="./piano?id=999">Lookup with non-existent id</a><br/>
+    <a href="./piano?inventory_id=147381">Lookup by inventory_id</a><br/>
+    <a href="./piano?inventory_id=xxxxxx">Lookup with non-existent inventory_id</a><br/>
+    <a href="./piano">Lookup with no identifier</a><br/>
+    <a href="./piano?njf983jkds">Lookup with malformed query</a><br/>
+    <br/>
+    <h4>Piano Lists</h4>
+    <a href="./pianos">Lookup all Pianos</a><br/>
+    <a href="./pianos?make=Baldwin">Lookup Baldwin Pianos</a><br/>
+    <a href="./pianos?{&quot;building&quot;:&quot;Austin&quot;}">Lookup Pianos in Austin with JSON</a><br/>
+    <a href="./pianos?make=ABC">Lookup empty</a><br/>
+    <a href="./pianos?{,a">Lookup with malformed query</a><br/>
+    <br/>
+    <h4>Individal Piano Service Records</h4>
+    <a href="./service_record?id=1">Lookup by id</a><br/>
+    <a href="./service_record?id=999">Lookup with non-existent id</a><br/>
+    <a href="./service_record">Lookup with no identifier</a><br/>
+    <a href="./service_record?njf983jkds">Lookup with malformed query</a><br/>
+    <br/>
+    <h4>Piano Service Record Lists</h4>
+    <a href="./service_records">Lookup all Service Records</a><br/>
+    <a href="./service_records?date=2014-09-01">Lookup by Date</a><br/>
+    <a href="./service_records?{&quot;technician&quot;:&quot;RN&quot;}">Lookup by Technician with JSON</a><br/>
+    <a href="./service_records?date=3000-01-01">Lookup empty</a><br/>
+    <a href="./service_records?njf983jkds">Lookup with malformed query</a><br/>
+
   </div>
   <hr/>
   <p>The following sections are waiting for the insert, update, and delete
