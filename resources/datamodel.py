@@ -395,34 +395,91 @@ class Piano(object):
 		self.cur.execute(sql, args)
 		self.con.commit()
 
-# *****************************************************************
-# This is low priority.  The current front end takes a complete
-# list and does filtering on the client side.
-#
-# Function for getting a list of Pianos that match certain criteria
-# Start out by querying the DB for a list of ids for matching
-# pianos, then map Piano() to the list of ids.
 
+class Pianos(object):
+# Loads and encapsulates a list of Piano objects that match
+# certain criteria.
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# See the contructor for ServiceRecords
-# A JSON/dict could be used here to pass in constraints for
-# filtering, in the same way ServiceRecords does it.
-def piano_list():
-	# Return a JSON string consisting of all pianos
-	con = db.connect(dbfile)
-	cur = con.cursor()
+	# Pass this a dict of search criteria that must be met
+	def __init__(self, criteria = {}):
+		# We will need a DB connection for the initial search
+		con = db.connect(dbfile)
+		cur = con.cursor()
 
-	sql = "SELECT id FROM piano;"
+		# We will allow criteria to be a JSON object, by
+		# converting it to a dict if it is a string
+		if (type(criteria) == type(str())):
+			criteria = js.loads(criteria)
+		elif (type(criteria) == type(None)):
+			criteria = {}
 
-	cur.execute(sql)
+		fields = {
+			"make_id"              : "make_id=?, ",
+			"make"                 : "make_id=(SELECT id FROM piano_make WHERE value=?), ", # By name
+			"model_id"             : "model_id=?, ",
+			"model"                : "model_id=(SELECT id FROM piano_model WHERE value=?), ", # By name
+			"type_id"              : "type_id=?, ",
+			"type"                 : "type_id=(SELECT id FROM piano_type WHERE value=?), ", # By name
+			"year"                 : "year=?, ",
+			"building_id"          : "building_id=?, ",
+			"building"             : "building_id=(SELECT id FROM building WHERE value=?), ", # By name
+			"room"                 : "room=?, ",
+			"room_type_id"         : "room_type_id=?, ",
+			"room_type"            : "room_type_id=(SELECT id FROM room_type WHERE value=?), ", # By name
+			"condition_id"         : "condition_id=?, ",
+			"condition"            : "condition_id=(SELECT id FROM piano_condition WHERE value=?), ", # By name
+			"service_interval"     : "service_interval=?, ",
+			"previous_building_id" : "previous_building_id=?, ",
+			"previous_building"    : "previous_building_id=(SELECT id FROM building WHERE value=?), ", # By name
+			"previous_room"        : "previous_room=?, ",
+			"last_service_date"    : "last_service_date=date(?), ",
+		}
 
-	pianos = [Piano(id=i[0]) for i in cur.fetchall()]
-	json = '{' + ', '.join([str(i) for i in pianos]) + '}'
+		sql  = "SELECT id FROM piano WHERE "
+		args = ()
 
-	con.close()
+		for k, v in criteria.iteritems():
+			if k in fields:
+				sql  += fields[k]
+				args += (v,)
 
-	return json
+		if len(criteria) == 0:
+			sql = "SELECT id FROM piano  "
+
+		sql = sql[:-2] + ";"
+
+		cur.execute(sql, args)
+		ids = cur.fetchall()
+
+		# That is all we needed from the DB
+		con.close()
+
+		self.records = []
+		for id in ids:
+			self.records.append(Piano(id = id[0]))
+
+		self.criteria = criteria
+
+	def __repr__(self):
+		return "Pianos(" + repr(self.criteria) + ")"
+
+	def __str__(self):
+		json = '{'
+		for i in self.records:
+			json += str(i) + ", "
+
+		if len(self.records) > 0:
+			json = json[:-2]
+
+		json += "}"
+
+		return json
+
+	def __getitem__(self, index):
+		return self.records[index]
+
+	def __len__(self):
+		return len(self.records)
 
 
 class ServiceRecord(object):
@@ -676,6 +733,8 @@ class ServiceRecords(object):
 		# converting it to a dict if it is a string
 		if (type(criteria) == type(str())):
 			criteria = js.loads(criteria)
+		elif (type(criteria) == type(None)):
+			criteria = {}
 
 		fields = {
 			"piano_id"    : "piano_id=?, ",
@@ -960,6 +1019,8 @@ class Todos(object):
 		# converting it to a dict if it is a string
 		if (type(criteria) == type(str())):
 			criteria = js.loads(criteria)
+		elif (type(criteria) == type(None)):
+			criteria = {}
 
 		fields = {
 			"piano_id"    : "piano_id=?, ",
@@ -1433,6 +1494,53 @@ if __name__ == "__main__":
 		print "Failed to delete records"
 	else:
 		print "Successfully deleted records"
+
+	print ""
+
+
+
+	# Todo list tests
+	print "---------- Interact Pianos Records ----------"
+	# Test get all pianos
+	allpianos = Pianos()
+
+	# Count the pianos
+	srs[0].cur.execute("SELECT COUNT(*) FROM piano;")
+	count = srs[0].cur.fetchall()[0][0]
+
+	if len(allpianos) == count:
+		print "Successfully loaded all pianos"
+	else:
+		print "Failed to load all pianos"
+
+
+	# Test get pianos by make name
+	balpianos = Pianos('{"make":"Baldwin"}')
+
+	# Count the Baldwin pianos
+	srs[0].cur.execute("SELECT COUNT(*) FROM piano WHERE make_id=(SELECT id FROM piano_make WHERE value='Baldwin');")
+	count = srs[0].cur.fetchall()[0][0]
+
+	if len(balpianos) == count:
+		print "Successfully loaded all Baldwin pianos by make name"
+	else:
+		print "Failed to load all Baldwin pianos by make name"
+
+
+	# Test get pianos by building id
+	srs[0].cur.execute("SELECT id FROM building WHERE value='Austin';")
+	building_id = srs[0].cur.fetchall()[0][0]
+
+	auspianos = Pianos({"building_id":building_id})
+
+	# Count pianos in Austin
+	srs[0].cur.execute("SELECT COUNT(*) FROM piano WHERE building_id=(SELECT id FROM building WHERE value='Austin');")
+        count = srs[0].cur.fetchall()[0][0]
+
+	if len(auspianos) == count:
+		print "Successfully loaded all pianos in Austin by building_id"
+	else:
+		print "Failed to load all pianos in Austin by building_id"
 
 	print ""
 
