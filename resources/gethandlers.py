@@ -132,6 +132,64 @@ def service_records(response):
 	return json
 index["service_records"] = service_records
 
+
+def todo(response):
+	# Get a todo by id
+	responsecode = 200
+	content = "application/json"
+	json = ""
+
+	try:
+		if type(response.query) is not dict or \
+		   "id" not in response.query:
+			responsecode = 400 # Bad Request
+			json = '{"error":"Invalid identifying data"}'
+		elif "id" in response.query:
+			json = str(model.Todo(id=response.query["id"]))
+
+	except model.NonUniqueSelectorError as e:
+		responsecode = 400 # Bad Request
+		json = '{{"error":{}}}'.format(e)
+	except model.RecordNotFoundError as e:
+		responsecode = 404
+		json = '{{"error":{}}}'.format(e)
+	except Exception as e:
+		print e
+		responsecode = 500
+		content = "text/plain"
+		json = "Internal Server Error"
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+index["todo"] = todo
+
+
+def todos(response):
+	# Get a list of todos filtering by a list of criteria
+	# sent as either a regular query or a JSON query string
+	responsecode = 200
+	content = "application/json"
+	json = ""
+
+	try:
+		json = str(model.Todos(response.query))
+	except ValueError as e:
+		print e
+		responsecode = 400 # Bad Request
+		json = '{"error":"Malformed query"}'
+	except Exception as e:
+		print e
+		responsecode = 500
+		content = "text/plain"
+		json = "Internal Server Error"
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+index["todos"] = todos
+
+
 if __name__ == "__main__":
 	for key in index.keys():
 		print key + " : " + str(index[key])
