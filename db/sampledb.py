@@ -24,6 +24,12 @@ piano_service_histories = [
 	(2, '2014-09-01', 'Tune-up', 'RN', 58, 68, 49.87),
 ]
 
+todos = [
+	("NULL", 1, "", "This is a todo!"),
+	(     2, 1, "", "Check the gain pedal."),
+	("NULL", 2, "", "Find out what room the new piano goes in.")
+]
+
 sql = "INSERT INTO piano (" + \
 	"inventory_id, " + \
 	"make_id, " + \
@@ -58,5 +64,14 @@ sql = "INSERT INTO piano_service_history (" + \
 	") " + \
 	"VALUES (?, ?, ?, ?, ?, ?, ?);"
 cur.executemany(sql, piano_service_histories);
+
+sql = "INSERT INTO todo (" + \
+	"piano_id, " + \
+	"building_id, " + \
+	"room, " + \
+	"notes" + \
+	")" + \
+	"VALUES (?, ?, ?, ?);"
+cur.executemany(sql, todos);
 
 con.commit();
