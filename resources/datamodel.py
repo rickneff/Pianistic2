@@ -1263,11 +1263,6 @@ if __name__ == "__main__":
 
 	print ""
 
-	print "---------------- Piano List -----------------"
-	print piano_list()
-
-	print ""
-
 
 	# Test retrieving service record from DB
 	print "----------- Select Service Record -----------"
@@ -1421,85 +1416,86 @@ if __name__ == "__main__":
 
 	# Todo list tests
 	print "----------- Interact Todo Records -----------"
-	todos = [
-		{"piano_id":2, "notes":"This piano needs some serious work"},
-		{"building":"Perkins Hall", "notes":"This building needs some serious work"},
-		{"room":"2", "notes":"This room needs some serious work"},
-		{"notes":"Today has been an interesting day"},
-	]
-
-	for i in todos:
-		json = "{"
-		for k, v in i.iteritems():
-			json += '"' + k + '":"' + str(v) + '", '
-		json = json[:-2] + "}"
-
-		Todo(json = json).write()
-	
-	sql = "SELECT id FROM todo;"
-	srs[0].cur.execute(sql)
-	
-	ids = srs[0].cur.fetchall()
-
-	if len(ids) == len(todos):
-		print "Successfully wrote records"
-	else:
-		print "Record count mismatch"
-
-	records = 0
-	for i in ids:
-		todo = Todo(id = i[0])
-		for j in todos:
-			if Todo(id = i[0]).notes == j["notes"]:
-				records += 1
-
-	if records == len(ids):
-		print "Successfully read all records"
-	else:
-		print "Failed to find all records"
-
-	alltodos = Todos()
-	p2todos = Todos({"piano_id":2})
-	phtodos = Todos('{"building":"Perkins Hall"}')
-	r2todos = Todos({"room":2})
-
-	if len(alltodos) >= 4:
-		print "Sucessfully read all todos with Todos class"
-	else:
-		print "Failed to read all todos with Todos class"
-
-	if len(p2todos) >= 1:
-		print "Sucessfully read piano_id == 2 todos with Todos class"
-	else:
-		print "Failed to read piano_id == 2 todos with Todos class"
-
-	if len(phtodos) >= 1:
-		print "Sucessfully read building == Perkins Hall todos with Todos class"
-	else:
-		print "Failed to read building == Perkins Hall todos with Todos class"
-
-	if len(r2todos) >= 1:
-		print "Sucessfully read room == 2 todos with Todos class"
-	else:
-		print "Failed to read room == 2 todos with Todos class"
-
-	for i in ids:
-		Todo(id = i[0]).delete()
-
-	sql = "SELECT id FROM todo;"
-	srs[0].cur.execute(sql)
-	ids = srs[0].cur.fetchall()
-
-	if len(ids) > 0:
-		print "Failed to delete records"
-	else:
-		print "Successfully deleted records"
-
+	print "This needs to be rewritten!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+	print Todo(id=2)
+#	todos = [
+#		{"piano_id":2, "notes":"This piano needs some serious work"},
+#		{"building":"Perkins Hall", "notes":"This building needs some serious work"},
+#		{"room":"2", "notes":"This room needs some serious work"},
+#		{"notes":"Today has been an interesting day"},
+#	]
+#
+#	for i in todos:
+#		json = "{"
+#		for k, v in i.iteritems():
+#			json += '"' + k + '":"' + str(v) + '", '
+#		json = json[:-2] + "}"
+#
+#		Todo(json = json).write()
+#	
+#	sql = "SELECT id FROM todo;"
+#	srs[0].cur.execute(sql)
+#	
+#	ids = srs[0].cur.fetchall()
+#
+#	if len(ids) == len(todos):
+#		print "Successfully wrote records"
+#	else:
+#		print "Record count mismatch"
+#
+#	records = 0
+#	for i in ids:
+#		todo = Todo(id = i[0])
+#		for j in todos:
+#			if Todo(id = i[0]).notes == j["notes"]:
+#				records += 1
+#
+#	if records == len(ids):
+#		print "Successfully read all records"
+#	else:
+#		print "Failed to find all records"
+#
+#	alltodos = Todos()
+#	p2todos = Todos({"piano_id":2})
+#	phtodos = Todos('{"building":"Perkins Hall"}')
+#	r2todos = Todos({"room":2})
+#
+#	if len(alltodos) >= 4:
+#		print "Sucessfully read all todos with Todos class"
+#	else:
+#		print "Failed to read all todos with Todos class"
+#
+#	if len(p2todos) >= 1:
+#		print "Sucessfully read piano_id == 2 todos with Todos class"
+#	else:
+#		print "Failed to read piano_id == 2 todos with Todos class"
+#
+#	if len(phtodos) >= 1:
+#		print "Sucessfully read building == Perkins Hall todos with Todos class"
+#	else:
+#		print "Failed to read building == Perkins Hall todos with Todos class"
+#
+#	if len(r2todos) >= 1:
+#		print "Sucessfully read room == 2 todos with Todos class"
+#	else:
+#		print "Failed to read room == 2 todos with Todos class"
+#
+#	for i in ids:
+#		Todo(id = i[0]).delete()
+#
+#	sql = "SELECT id FROM todo;"
+#	srs[0].cur.execute(sql)
+#	ids = srs[0].cur.fetchall()
+#
+#	if len(ids) > 0:
+#		print "Failed to delete records"
+#	else:
+#		print "Successfully deleted records"
+#
 	print ""
 
 
 
-	# Todo list tests
 	print "---------- Interact Pianos Records ----------"
 	# Test get all pianos
 	allpianos = Pianos()
