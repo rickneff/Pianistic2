@@ -2,7 +2,7 @@
 # as the code for populating object instances from the database
 # and writing changes back.
 import sqlite3 as db
-import json as j
+import json as js
 
 dbfile = "db/sample.db"
 
@@ -161,7 +161,7 @@ class Piano(object):
 	# (presumably passed in from the client).
 	def fromjson(self, json):
 		# Convert the JSON string into a dictionary
-		data = j.loads(json)
+		data = js.loads(json)
 
 		# Because we are not filtering, this could add attributes that
 		# are not normally part of the Piano class.  It can also allow
@@ -495,7 +495,7 @@ class ServiceRecord(object):
 	# (presumably passed in from the client).
 	def fromjson(self, json):
 		# Convert the JSON string into a dictionary
-		data = j.loads(json)
+		data = js.loads(json)
 
 		# Because we are not filtering, this could add attributes that
 		# are not normally part of this class.  It can also allow
@@ -675,7 +675,7 @@ class ServiceRecords(object):
 		# We will allow criteria to be a JSON object, by
 		# converting it to a dict if it is a string
 		if (type(criteria) == type(str())):
-			criteria = j.loads(criteria)
+			criteria = js.loads(criteria)
 
 		fields = {
 			"piano_id"    : "piano_id=?, ",
@@ -796,7 +796,7 @@ class Todo(object):
 	# (presumably passed in from the client).
 	def fromjson(self, json):
 		# Convert the JSON string into a dictionary
-		data = j.loads(json)
+		data = js.loads(json)
 
 		# Because we are not filtering, this could add attributes that
 		# are not normally part of this class.  It can also allow
@@ -945,8 +945,74 @@ class Todo(object):
 		self.cur.execute(sql, args)
 		self.con.commit()
 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# We need a list class for todos
+
+class Todos(object):
+# Loads and encapsulates a list of Todo objects that match
+# certain criteria.
+
+	# Pass this a dict of search criteria that must be met
+	def __init__(self, criteria = {}):
+		# We will need a DB connection for the initial search
+		con = db.connect(dbfile)
+		cur = con.cursor()
+
+		# We will allow criteria to be a JSON object, by
+		# converting it to a dict if it is a string
+		if (type(criteria) == type(str())):
+			criteria = js.loads(criteria)
+
+		fields = {
+			"piano_id"    : "piano_id=?, ",
+			"building"    : "building_id=(SELECT id FROM building WHERE value=?), ", # By name
+			"building_id" : "building_id=?, ",
+			"room"        : "room=?, ",
+		}
+
+		sql  = "SELECT id FROM todo WHERE "
+		args = ()
+
+		for k, v in criteria.iteritems():
+			if k in fields:
+				sql  += fields[k]
+				args += (v,)
+
+		if len(criteria) == 0:
+			sql = "SELECT id FROM todo  "
+
+		sql = sql[:-2] + ";"
+
+		cur.execute(sql, args)
+		ids = cur.fetchall()
+
+		# That is all we needed from the DB
+		con.close()
+
+		self.records = []
+		for id in ids:
+			self.records.append(Todo(id = id[0]))
+
+		self.criteria = criteria
+
+	def __repr__(self):
+		return "Todos(" + repr(self.criteria) + ")"
+
+	def __str__(self):
+		json = '{'
+		for i in self.records:
+			json += str(i) + ", "
+
+		if len(self.records) > 0:
+			json = json[:-2]
+
+		json += "}"
+
+		return json
+
+	def __getitem__(self, index):
+		return self.records[index]
+
+	def __len__(self):
+		return len(self.records)
 
 
 
@@ -1170,7 +1236,7 @@ if __name__ == "__main__":
 
 	sr = ServiceRecord(json = json)
 
-	if (cmp(j.loads(json), j.loads(str(sr)))):
+	if (cmp(js.loads(json), js.loads(str(sr)))):
 		print "Failed to produce record from json"
 		print "json:", json
 		print "str(sr):", str(sr)
@@ -1259,7 +1325,7 @@ if __name__ == "__main__":
 	if len(srs) == len(records):
 		tr = [records[1], records[2], records[0]]
 		for s, r in zip(srs, tr):
-			s = j.loads(str(s))
+			s = js.loads(str(s))
 			del s["id"]
 			if cmp(s, r):
 				success = False
@@ -1331,6 +1397,31 @@ if __name__ == "__main__":
 	else:
 		print "Failed to find all records"
 
+	alltodos = Todos()
+	p2todos = Todos({"piano_id":2})
+	phtodos = Todos('{"building":"Perkins Hall"}')
+	r2todos = Todos({"room":2})
+
+	if len(alltodos) >= 4:
+		print "Sucessfully read all todos with Todos class"
+	else:
+		print "Failed to read all todos with Todos class"
+
+	if len(p2todos) >= 1:
+		print "Sucessfully read piano_id == 2 todos with Todos class"
+	else:
+		print "Failed to read piano_id == 2 todos with Todos class"
+
+	if len(phtodos) >= 1:
+		print "Sucessfully read building == Perkins Hall todos with Todos class"
+	else:
+		print "Failed to read building == Perkins Hall todos with Todos class"
+
+	if len(r2todos) >= 1:
+		print "Sucessfully read room == 2 todos with Todos class"
+	else:
+		print "Failed to read room == 2 todos with Todos class"
+
 	for i in ids:
 		Todo(id = i[0]).delete()
 
@@ -1344,8 +1435,6 @@ if __name__ == "__main__":
 		print "Successfully deleted records"
 
 	print ""
-
-
 
 
 '''
