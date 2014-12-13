@@ -1,4 +1,5 @@
 import datamodel as model
+import json as js
 
 # Resource request handler index
 # After each resource handler function, that function should be added
@@ -15,7 +16,8 @@ index = {
 # request.  Handlers should set_content for content type and
 # set_response for response code, for each request.  The data should be
 # returned in the return value.
-def getpiano(response):
+def piano(response):
+	# Get a piano using either id or inventory_id
 	responsecode = 200
 	content = "application/json"
 	json = ""
@@ -46,7 +48,89 @@ def getpiano(response):
 	response.set_content(content)
 	response.set_response(responsecode)
 	return json
-index["getpiano"] = getpiano
+index["piano"] = piano
+
+
+def pianos(response):
+	# Get a list of pianos filtering by a list of criteria
+	# sent as either a regular query or a JSON query string
+	responsecode = 200
+	content = "application/json"
+	json = ""
+
+	try:
+		json = str(model.Pianos(response.query))
+	except ValueError as e:
+		print e
+		responsecode = 400 # Bad Request
+		json = '{"error":"Malformed query"}'
+	except Exception as e:
+		print e
+		responsecode = 500
+		content = "text/plain"
+		json = "Internal Server Error"
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+index["pianos"] = pianos
+
+
+def service_record(response):
+	# Get a service record by id (or an error...)
+	responsecode = 200
+	content = "application/json"
+	json = ""
+
+	try:
+		if type(response.query) is not dict or \
+		   "id" not in response.query:
+			responsecode = 400 # Bad Request
+			json = '{"error":"Invalid identifying data"}'
+		elif "id" in response.query:
+			json = str(model.ServiceRecord(id=response.query["id"]))
+
+	except model.NonUniqueSelectorError as e:
+		responsecode = 400 # Bad Request
+		json = '{{"error":{}}}'.format(e)
+	except model.RecordNotFoundError as e:
+		responsecode = 404
+		json = '{{"error":{}}}'.format(e)
+	except Exception as e:
+		print e
+		responsecode = 500
+		content = "text/plain"
+		json = "Internal Server Error"
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+index["service_record"] = service_record
+
+
+def service_records(response):
+	# Get a list of service records filtering by a list of criteria
+	# sent as either a regular query or a JSON query string
+	responsecode = 200
+	content = "application/json"
+	json = ""
+
+	try:
+		json = str(model.ServiceRecords(response.query))
+	except ValueError as e:
+		print e
+		responsecode = 400 # Bad Request
+		json = '{"error":"Malformed query"}'
+	except Exception as e:
+		print e
+		responsecode = 500
+		content = "text/plain"
+		json = "Internal Server Error"
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+index["service_records"] = service_records
 
 if __name__ == "__main__":
 	for key in index.keys():
