@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en" ng-app="pianistic">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Austin Tooley, Brian Armstrong, Kenneth Heyen">
+  <title>dbPianistic</title>
+
+	<!--favicon-->
+  <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAA
+  AAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAenp6AL29vQD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiAiIgIiIAAAAAAAAAAAAzMwMzMDMzADMzAzMwMzMAMzMDM
+  zAzMwAzMwMzMDMzADMxETMREzMAMzAAMwADMwAzMAAzAAMzADMwADMAAzMAMzAAMwADMwAzMAAzAAMzADMwADMAA
+  zMAMzAAMwADMwAAAAAAAAAACEIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  AAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon" />
+	
+	<!--stylesheets-->
+  <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+  <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+	
+	<!--JS-->
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
+  <script type="text/javascript" src="newfront.js"></script>
+
+</head>
+<body ng-controller="DBController as db">
+  <div class="container">
+      <!-- Static navbar -->
+      <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">dbPianistic</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Current Tasks</a></li>
+            <li class="active"><a href="pianos.html">Pianos</a></li>
+            <li ><a href="locations.html">Locations</a></li>
+         	<li><a href="todo.html">To Do</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="addPiano.html">Add Piano</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+
+      <div class="col-lg-12">
+            <h2>Pianos </span></h2>
+            Filter by:<br/><br/>
+            <div class="col-lg-12">
+              <form action="">
+                <div class="searchBox">
+                  <div class="search">
+                    <label>BYUI Inventory ID: </label>
+                    <input type="text" plac eholder="11271989" ng-model="search.inventory_id"/>
+                  </div>
+                  <div class="search">
+                    <label>Type: </label>
+                    <input type="text" place holder="Upright" ng-model="search.type"/>
+                  </div>
+                  <div class="search">
+                    <label>Make: </label>
+                    <input type="text" placeh older="Yamaha" ng-model="search.make"/>
+                  </div>
+                  <div class="search">
+                    <label>Model: </label>
+                    <input type="text" placeho lder="UST7" ng-model="search.model"/>
+                  </div>
+                  <div class="search">
+                    <label>Building: </label>
+                    <input type="text" placeh older="Austin" ng-model="search.building"/>
+                  </div>
+                </div>
+                  <br>
+                <div class="searchBox">
+                  <div class="search">
+                    <label>Year: </label>
+                    <input type="text" plac eholder="1989" ng-model="search.year"/>
+                  </div>
+                  <div class="search">
+                    <label>Age: </label>
+                    <input type="text" placeho lder="24" ng-model="search.age"/>
+                  </div>
+                  <div class="search">
+                    <label>Condition: </label>
+                    <input type="text" placeho lder="Good" ng-model="search.condition"/>
+                  </div>
+                  <div class="search">
+                    <label>Serial: </label>
+                    <input type="text" placeh older="A80185" ng-model="search.mfg_serial"/>
+                  </div>
+                  <div class="search">
+                    <label>Room #: </label>
+                    <input type="text" place holder="310" ng-model="search.room"/>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="table-responsive tableBox" style="clear: both;">
+              <table id="pianoTable" class="table table-bordered table-hover table-striped"> <!-- tablesorter piano"> -->
+                <thead>
+                  <tr>
+                    <th class="sorted">Location <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, ['building', 'room'])"></th>
+                    <th>BYU-I ID <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'inventory_id')"></th>
+                    <th>Serial # <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'mfg_serial')"></th>
+                    <th>Make <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'make')"></th>
+                    <th>Model <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'model')"></th>
+                    <th>Type <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'type')"></th>
+                    <th>Year <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'year')"></th>
+                    <th>Age <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'age')"></th>
+                    <th>Condition <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'condition')"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="piano in db.pianos | filter:search | orderBy:db.cSort.sortColumn:db.cSort.reverse" ng-cloak ng-click="db.openPage(piano)">
+                      <td>{{piano.building}} {{piano.room}}</td>
+                      <td>{{piano.inventory_id}}</td>
+                      <td>{{piano.mfg_serial}}</td>
+                      <td>{{piano.make}}</td>
+                      <td>{{piano.model}}</td>
+                      <td>{{piano.type}}</td>
+                      <td>{{piano.year}}</td> 
+                      <td>{{db.getAge(piano.year)}}</td>
+                      <td>{{piano.condition}}</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>
