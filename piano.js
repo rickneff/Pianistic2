@@ -14,7 +14,7 @@
       pianistic.piano.age = pianistic.getAge(pianistic.piano.year);
 
       var lsdate = new Date(pianistic.piano.last_service_date);
-      var days = 180 - Math.floor(Math.abs(new Date - lsdate) / (1000 * 60 * 60 * 24));
+      var days = pianistic.piano.service_interval - Math.floor(Math.abs(new Date() - lsdate) / (1000 * 60 * 60 * 24));
 
       pianistic.piano.next_service = days;
     });

@@ -14,8 +14,14 @@
       // really be a better way of doing this.
       for (var i = 0; i < pianistic.pianos.length; i++) {
         pianistic.pianos[i].age = pianistic.getAge(pianistic.pianos[i].year)
+        pianistic.pianos[i].days_until_service = pianistic.getDaysToService(pianistic.pianos[i]);
       }
     });
+
+    this.getDaysToService = function(piano) {
+      var lsdate = new Date(piano.last_service_date);
+      return piano.service_interval - Math.floor(Math.abs(new Date() - lsdate) / (1000 * 60 * 60 * 24));
+    };
 
     this.getAge = function(year) {
       return (new Date()).getFullYear() - year;
