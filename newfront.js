@@ -21,9 +21,6 @@
       return (new Date()).getFullYear() - year;
     };
 
-    this.openPage = function() {
-    }
-
     this.cSort = {sortColumn: ['building', 'room'], reverse: false};
     this.sort = function($event, column) {
 
@@ -51,7 +48,7 @@
     };
 
     this.openPage = function(selectedPiano) {
-      window.open("pianoInfo.html?" + selectedPiano.id, "_self");
+      window.open("newpianoInfo.html?" + selectedPiano.id, "_self");
     };
 
   }]);

@@ -1,0 +1,385 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en" ng-app="piano">
+  <head>
+  	<meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="">
+      <meta name="author" content="Austin Tooley, Brian Armstrong, Kenneth Heyen">
+  	<title>dbPianistic</title>
+
+    <!--favicon-->
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAA
+    AAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAenp6AL29vQD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiAiIgIiIAAAAAAAAAAAAzMwMzMDMzADMzAzMwMzMAMzMDM
+    zAzMwAzMwMzMDMzADMxETMREzMAMzAAMwADMwAzMAAzAAMzADMwADMAAzMAMzAAMwADMwAzMAAzAAMzADMwADMAA
+    zMAMzAAMwADMwAAAAAAAAAACEIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    AAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon" />
+  	
+    <!--stylesheets-->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+  	
+  	<!--JS-->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+
+    <script>
+       $(function() {
+           $("#date").datepicker();
+           $("#format").change(function() {
+             $("#date").datepicker("option", "dateFormat", $(this).val());
+           });
+         });
+    </script>
+
+    <!-- Page Specific Plugins -->
+    <script src="js/tablesorter/jquery.tablesorter.js"></script>
+    <script src="js/tablesorter/tables.js"></script>
+<!--    <script type="text/javascript" src="front.js"></script> -->
+    <script type="text/javascript" src="piano.js"></script>
+
+  </head>
+  <body ng-controller="DBController as db">
+  	<div class="container">
+        <!-- Static navbar -->
+      <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">dbPianistic</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="index.html">Current Tasks</a></li>
+            <li class="active"><a href="pianos.html">Pianos</a></li>
+            <li><a href="locations.html">Locations</a></li>
+           	<li><a href="todo.html">To Do</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="addPiano.html">Add Piano</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+
+      <div class="container">
+        <div class="col-lg-6">
+          <h1><b>BYUI Inventory ID:</b> {{db.piano.inventory_id}}</h1>
+          <p><b>Current Location:</b> {{db.piano.building}} {{db.piano.room}} - {{db.piano.room_type}}</p>
+          <p><b>Make: </b>{{db.piano.make}}</p>
+          <p><b>Model: </b>{{db.piano.model}}</p>
+          <p><b>Serial #: </b>{{db.piano.mfg_serial}}</p>
+          <p><b>Type: </b>{{db.piano.type}}</p>
+          <p><b>Condition: </b>{{db.piano.condition}}</p>
+          <p><b>Cost: $</b>{{db.piano.cost}}</p>
+          <p><b>Age: </b>{{db.piano.age}} years</p>
+          <p><b>Service Interval: </b>{{db.piano.service_interval}} days</p>
+          <p><b>Next Service: </b>{{db.piano.next_service}} days</p>
+          <p><b>Service Notes: </b>{{db.piano.service_notes}}
+        </div>
+        <div class="col-lg-6">
+          <div class="table-responsive tableBox">
+            <table class="table table-bordered table-hover table-striped historyTable">
+              <div style="background:#3C3C3C" class="panel-heading">
+                <div style="color:white" class="panel-title">Service History 
+                  <a href="">
+                    <div href="#" class="addButton" data-toggle="modal" data-target="#myModal">Add Event
+                    </div>
+                  </a>
+                      <!-- Button trigger modal -->
+                      <!--<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                      Launch demo modal
+                      </button> -->
+
+                      <!-- Modal -->
+                  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		       
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title" id="myModalLabel">Add Event</h4>
+                        </div>
+                        <form name="eventForm" id="eventForm"	action="/thirstifish/service/DBPianistic/addEvent" method="post">
+                          <div class="modal-body">
+                            <div class="col-lg-12">
+                              <input type="hidden" name="id" value="{{db.piano.id}}">
+                              <label>Date: </label>
+			      <input id="date" name="date" size="50" />
+			      <select id="format">
+				<option value="mm/dd/yy">Default - mm/dd/yy</option>
+				<option value="yy-mm-dd">ISO 8601 - yy-mm-dd</option>
+				<option value="d M, y">Short - d M, y</option>
+				<option value="d MM, y">Medium - d MM, y</option>
+				<option value="DD, d MM, yy">Full - DD, d MM, yy</option>
+			      </select>
+                              <label style="margin-top:10px">Action performed: </label>
+                              <input type="text" name="service" placeho lder="General Service" required/>
+                              <label style="margin-top:10px">Performed by: </label>
+                              <input type="text" name="user" placehol der="KH" required/>
+                              <label>Temperature: </label>
+                              <input type="text" name="temp" placehol der="68"/>
+                              <label>Humidity: </label>
+                              <input type="text" name="hum" placeho lder="50"/>
+                              <label>Pitch: </label>
+                              <input type="text" name="pitch"/>
+                              <label>Reset Service Interval Date?</label>
+                              <input type="checkbox" name="resetInterval" value="rstI" />
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                              <input type="submit" class="btn btn-primary" value="Add"/>
+                          </div>
+                        </form>
+
+                        <script type="text/javascript">
+                          var frm = $('#eventForm');
+                          frm.submit(function (ev)
+  		                    {
+                            ev.preventDefault();
+                            $.ajax(
+  		                      {
+                              type: frm.attr('method'),
+                              url: frm.attr('action'),
+                              data: frm.serialize() + '\n',
+                              success: function (data)
+  		                        {
+  		                          localCache().flush("piano");
+  		                          localCache().flush("event");
+                                console.log(data);
+                                // alert(window.location)
+                                window.location.reload();
+                                //document.location.reload();
+                              }
+                            });
+                          });
+                        </script>
+                      </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+                </div>
+              </div>
+
+              <thead>
+                <tr>
+                  <th>Date </th>
+                  <th>Action Performed</th>
+                  <th>Performed by</th>
+                  <th>Rel.&nbsp;Hum.</th>
+                  <th>Temp.</th>
+                  <th>Pitch</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr ng-repeat="event in db.service_history | orderBy:'date'">
+                  <td>{{event.date}}</td>
+                  <td>{{event.action}}</td>
+                  <td>{{event.technician}}</td>
+                  <td>{{event.humidity}}</td>
+                  <td>{{event.temperature}}</td>
+                  <td>{{event.pitch}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div> <!-- class=container-->
+    </div> <!-- top navbar container -->
+  <!--<form id="deletePianoForm" name="deletePianoForm" method="post">
+  <div class="container">
+    <div class="col-lg-6">
+               <div class="table-responsive tableBox" style="display:none" id="editM">
+                <table class="table table-bordered table-hover table-striped historyTable">
+                  <div style="background:#3C3C3C" class="panel-heading">
+                    <div style="color:white" class="panel-title">
+                      Edit Piano
+                    </div>
+                  </div>
+                  <thead>
+                    <tr>
+                      <th>Location</th>
+                      <th>Condition</th>
+                      <th>Service Interval</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td><input type="text" id = "nLoc" name = "location" placeholder = "room number"/></td>
+                        <td><select id = "nCon" name = "condition"><option value="null">Condition</option><option value="1">Good</option><option value="2">Fair</option><option value="3">Poor</option></select></td>
+                        <td><input type="text" id = "nInt" name = "interval" placeholder = "Service Interval"/> </td>
+                      </tr>
+                  </tbody>
+                </table>
+                </div>
+      </div>
+    </div>
+    </div>
+  </div>
+    <hr>-->
+
+  <!--
+        <h2> Get Piano Info </h2>
+  		<br> Enter Piano Type <input type="text" id="type">
+  		<input type="button" value="Get Info" onclick="getInfo();"/>
+  		<br> Location : <span id="Location1"></span> <br
+  		> ID : <span id="ID1"></span> <br
+  		> Condition : <span id="Condition1"></span> <br>
+  -->
+      <!--</div>  -->
+
+    <div class="deleteButton">
+      <!--changed ng-click to onclick due to javascript scoping errors of changing button functions-->
+      <!--ng-click="deletePiano()"-->
+      <button type="button" id="editBtn" data-toggle="modal" data-target="#myModal1" class="deleteButton btn btn-primary" data-dismiss="modal">Edit Piano</button>
+      <button type="button" id="deleteBtn" onclick="deletePiano()" class="deleteButton btn btn-danger" data-dismiss="modal">Delete Piano</button>
+      <input type="hidden" name="id" value="{{currentPiano.piano_pk}}">
+      <div style="text-align:left" class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModal1Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModal1Label">Edit Piano</h4>
+            </div>
+            <form name="updatePianoForm" id="updatePianoForm" action="/thirstifish/service/DBPianistic/updatePiano" method="post">
+              <div class="modal-body">
+                <div class="col-lg-12">
+                  <input type="hidden" name="id" value="{{currentPiano.piano_pk}}">
+
+                  <div style="float:left; padding: 10px; clear:left">
+                    <label>Building: </label>
+                    <select id="building" name="building" class="input-large">
+                      <option ng-selected="{{building == currentPiano.building_name}}" class="option-repeat" ng-repeat="building in buildingNames | orderBy: 'building.building_name'" value="{{building}}">{{building}}</option>
+                    </select>
+                  </div>
+                  <div style="float:left; padding:10px">
+                    <label>Room #: </label>
+                    <input type="text" name="room" value="{{currentPiano.room_number}}">
+                  </div>
+
+                  <div style="float:left; padding:10px; clear:right">
+                    <label>Room Type: </label>
+                    <select id="roomType" name="roomType" class="input-large">
+                      <option ng-selected="{{roomType == currentPiano.room_type_text}}" class="option-repeat" ng-repeat="roomType in roomTypeNames" value="{{roomType}}">{{roomType}}</option>
+                    </select>
+                  </div>
+
+                  <div style="float:left; padding:10px; clear:left">
+                    <label>Make: </label>
+                    <select id="pianoMake" name="make" class="input-large" disab led>
+                      <option ng-selected="{{make == currentPiano.make_name}}"class="option-repeat" ng-repeat="make in pianoMakes" value="{{make}}">{{make}}</option>
+                    </select>
+                  </div>
+                  <div style="float:left; padding:10px">
+                    <label>Model: </label>
+                    <select id="model" name="model" class="input-large">
+                      <option ng-selected="{{model == currentPiano.model_name}}" class="option-repeat" ng-repeat="model in modelNames" value="{{model}}">{{model}}</option>
+                    </select>
+                  </div>
+                  <div style="float:left; padding:10px; clear:right">
+                    <label>Type: </label>
+                    <select id="pianoType" name="type" class="input-large">
+                      <option ng-selected="{{type == currentPiano.type_text}}" class="option-repeat" ng-repeat="type in pianoTypes" value="{{type}}">{{type}}</option>
+                    </select>
+                  </div>
+                  <div style="float:left; padding:10px; clear:right">
+                    <label>Year: </label>
+                    <input type="text" name="year" value="{{currentPiano.year}}" disa bled>
+                  </div>
+                  <div style="float:left; padding:10px">
+                    <label>Condition: </label>
+                    <select id="condition" name="condition" class="input-large">
+                      <option ng-selected="{{condition == currentPiano.condtion_text}}"class="option-repeat" ng-repeat="condition in conditionNames" value="{{condition}}">{{condition}}</option>
+                    </select>
+                  </div>
+                  <div style="float:left; padding:10px">
+                    <label>Serial Number: </label>
+                      <input type="text" name="serial" value="{{currentPiano.mfg_serial}}">
+                  </div>
+                  <div style="float:left; padding:10px; clear:left">
+                    <label>BYUI-ID: </label>
+                    <input type="text" name="BYUIinventoryID" value="{{currentPiano.byui_inventory_id}}">
+                    
+                  </div>
+                  <div style="float:left; padding:10px; clear:right">
+                    <label>Cost: </label>
+                    <input type="text" name="cost" value="{{currentPiano.cost}}">
+                  </div>
+                  <div style="float:left; padding:10px">
+                    <label>Value: </label>
+                    <input type="text" name="value" value="{{currentPiano.value}}">
+                  </div>
+                  
+                  <div style="float:left; padding:10px; clear:left">
+                    <label>Service Interval: </label>
+                    <input type="text" name="nextServiceInterval" value="{{currentPiano.next_service_interval}}">
+                  </div>
+                  <div style="float:left; padding:10px">
+                    <label>Previous Bldg. (if moved): </label>
+                      <select id="previousBuilding" name="previousBuildingIfMoved" class="input-large">
+                         <!-- Needed to make this so the field is blank or null if there is no previous location.-->
+                        <option value="null" selected></option>
+                        <option class="option-repeat" ng-selected="{{building == currentPiano.previous_building_if_moved_name}}" ng-repeat="building in buildingNames" value="{{building}}">{{building}}</option>
+                      </select>
+                  </div>
+                  <div style="float:left; padding:10px; clear:right">
+                    <label>Previous Rm (if moved): </label>
+                    <input type="text" name="previousRoomIfMoved" value="{{currentPiano.previous_room_if_moved_number}}"/>
+                  </div>
+                  <div style="float:left; padding:10px; clear:left">
+                    <label>Service Notes: </label>
+                    <textarea name="futureServiceNotes">{{currentPiano.future_service_notes}}</textarea>
+                  </div>
+                  <div style="float:left; padding:10px; clear:right">
+                    <label>General Notes: </label>
+                    <textarea name="generalPianoNotes">{{currentPiano.general_piano_notes}}</textarea>
+                  </div>
+                </div>
+              </div>
+              <div style="float:none; padding:10px; clear:both">
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <input type="submit" class="btn btn-primary" value="Submit"/>
+                </div>
+              </div>
+            </form>
+            <script type="text/javascript">
+              var frmUP = $('#updatePianoForm');
+	      frmUP.submit(function (ev)
+	      {
+	        ev.preventDefault();
+	        $.ajax(
+	        {
+	           type: frmUP.attr('method'),
+	           url: frmUP.attr('action'),
+	           data: frmUP.serialize() + '\n',
+	           success: function (data)
+	           {
+	              localCache().save("currentP", data);
+	              localCache().flush("piano");
+	              window.location.reload();
+	           }
+	        });
+              });
+	    </script>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+      <!-- Bootstrap core JavaScript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>
