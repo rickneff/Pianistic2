@@ -775,14 +775,14 @@ class ServiceRecords(object):
 		return "ServiceRecords(" + repr(self.criteria) + ")"
 
 	def __str__(self):
-		json = '{'
+		json = '['
 		for i in self.records:
 			json += str(i) + ", "
 
 		if len(self.records) > 0:
 			json = json[:-2]
 
-		json += "}"
+		json += "]"
 
 		return json
 
