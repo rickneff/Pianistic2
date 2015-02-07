@@ -23,10 +23,11 @@
 	<!--JS-->
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
-  <script type="text/javascript" src="newfront.js"></script>
+  <script type="text/javascript" src="pianistic.js"></script>
+  <script type="text/javascript" src="pianos.js"></script>
 
 </head>
-<body ng-controller="DBController as db">
+<body ng-controller="PianosController as psc">
   <div class="container">
       <!-- Static navbar -->
       <div class="navbar navbar-default" role="navigation">
@@ -108,19 +109,19 @@
               <table id="pianoTable" class="table table-bordered table-hover table-striped"> <!-- tablesorter piano"> -->
                 <thead>
                   <tr>
-                    <th class="sorted">Location <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, ['building', 'room'])"></th>
-                    <th>BYU-I ID <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'inventory_id')"></th>
-                    <th>Serial # <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'mfg_serial')"></th>
-                    <th>Make <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'make')"></th>
-                    <th>Model <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'model')"></th>
-                    <th>Type <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'type')"></th>
-                    <th>Year <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'year')"></th>
-                    <th>Age <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'age')"></th>
-                    <th>Condition <span class="glyphicon glyphicon-chevron-down" ng-click="db.sort($event, 'condition')"></th>
+                    <th class="sorted">Location <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, ['building', 'room'])"></th>
+                    <th>BYU-I ID <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'inventory_id')"></th>
+                    <th>Serial # <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'mfg_serial')"></th>
+                    <th>Make <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'make')"></th>
+                    <th>Model <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'model')"></th>
+                    <th>Type <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'type')"></th>
+                    <th>Year <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'year')"></th>
+                    <th>Age <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'age')"></th>
+                    <th>Condition <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'condition')"></th>
                   </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="piano in db.pianos | filter:search | orderBy:db.cSort.sortColumn:db.cSort.reverse" ng-cloak ng-click="db.openPage(piano)">
+                    <tr ng-repeat="piano in psc.pianos | filter:search | orderBy:psc.cSort.sortColumn:psc.cSort.reverse" ng-cloak ng-click="psc.openPage(piano)">
                       <td>{{piano.building}} {{piano.room}}</td>
                       <td>{{piano.inventory_id}}</td>
                       <td>{{piano.mfg_serial}}</td>

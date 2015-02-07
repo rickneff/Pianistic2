@@ -22,10 +22,11 @@
     
     <!--JS-->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
-    <script type="text/javascript" src="newfront.js"></script>
+    <script type="text/javascript" src="pianistic.js"></script>
+    <script type="text/javascript" src="pianos.js"></script>
 
   </head>
-  <body ng-controller="DBController as db">
+  <body ng-controller="PianosController as psc">
     <div class="container">
       <!-- Static navbar -->
       <div class="navbar navbar-default" role="navigation">
@@ -58,7 +59,7 @@
           </div>
           <div class="panel-body">
             <div class="list-group">
-              <a href="#" class="list-group-item" ng-if="piano.days_until_service <= 0" ng-repeat="piano in db.pianos | filter:search | orderBy:'days_until_service'" ng-cloak ng-click="db.openPage(piano)">
+              <a href="#" class="list-group-item" ng-if="piano.days_until_service <= 0" ng-repeat="piano in psc.pianos | filter:search | orderBy:'days_until_service'" ng-cloak ng-click="psc.openPage(piano)">
                 <span class="badge" style="background-color:#ffaaaa;"><b>{{piano.days_until_service}}</b></span>
                 <i class="fa fa-calendar"></i> {{piano.building}} {{piano.room}} - {{piano.make}}&nbsp;&nbsp;{{piano.model}}
               </a>
@@ -73,7 +74,7 @@
           </div>
           <div class="panel-body">
             <div class="list-group">
-	      <a href="#" class="list-group-item" ng-if="piano.days_until_service < 8 && piano.days_until_service > 0" ng-repeat="piano in db.pianos | filter:search | orderBy:'days_until_service'" ng-cloak ng-click="db.openPage(piano)">
+	      <a href="#" class="list-group-item" ng-if="piano.days_until_service < 8 && piano.days_until_service > 0" ng-repeat="piano in psc.pianos | filter:search | orderBy:'days_until_service'" ng-cloak ng-click="psc.openPage(piano)">
                 <span class="badge">{{piano.days_until_service}}</span>
                 <i class="fa fa-calendar"></i> {{piano.building}} {{piano.room}} - {{piano.make}}&nbsp;&nbsp;{{piano.model}}
               </a>

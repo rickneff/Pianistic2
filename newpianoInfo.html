@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en" ng-app="piano">
+<html lang="en" ng-app="pianistic">
   <head>
   	<meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,11 +39,11 @@
     <!-- Page Specific Plugins -->
     <script src="js/tablesorter/jquery.tablesorter.js"></script>
     <script src="js/tablesorter/tables.js"></script>
-<!--    <script type="text/javascript" src="front.js"></script> -->
+    <script type="text/javascript" src="pianistic.js"></script>
     <script type="text/javascript" src="piano.js"></script>
 
   </head>
-  <body ng-controller="DBController as db">
+  <body ng-controller="PianoController as pc">
   	<div class="container">
         <!-- Static navbar -->
       <div class="navbar navbar-default" role="navigation">
@@ -71,18 +71,18 @@
 
       <div class="container">
         <div class="col-lg-6">
-          <h1><b>BYUI Inventory ID:</b> {{db.piano.inventory_id}}</h1>
-          <p><b>Current Location:</b> {{db.piano.building}} {{db.piano.room}} - {{db.piano.room_type}}</p>
-          <p><b>Make: </b>{{db.piano.make}}</p>
-          <p><b>Model: </b>{{db.piano.model}}</p>
-          <p><b>Serial #: </b>{{db.piano.mfg_serial}}</p>
-          <p><b>Type: </b>{{db.piano.type}}</p>
-          <p><b>Condition: </b>{{db.piano.condition}}</p>
-          <p><b>Cost: $</b>{{db.piano.cost}}</p>
-          <p><b>Age: </b>{{db.piano.age}} years</p>
-          <p><b>Service Interval: </b>{{db.piano.service_interval}} days</p>
-          <p><b>Next Service: </b>{{db.piano.next_service}} days</p>
-          <p><b>Service Notes: </b>{{db.piano.service_notes}}
+          <h1><b>BYUI Inventory ID:</b> {{pc.piano.inventory_id}}</h1>
+          <p><b>Current Location:</b> {{pc.piano.building}} {{pc.piano.room}} - {{pc.piano.room_type}}</p>
+          <p><b>Make: </b>{{pc.piano.make}}</p>
+          <p><b>Model: </b>{{pc.piano.model}}</p>
+          <p><b>Serial #: </b>{{pc.piano.mfg_serial}}</p>
+          <p><b>Type: </b>{{pc.piano.type}}</p>
+          <p><b>Condition: </b>{{pc.piano.condition}}</p>
+          <p><b>Cost: $</b>{{pc.piano.cost}}</p>
+          <p><b>Age: </b>{{pc.piano.age}} years</p>
+          <p><b>Service Interval: </b>{{pc.piano.service_interval}} days</p>
+          <p><b>Next Service: </b>{{pc.piano.next_service}} days</p>
+          <p><b>Service Notes: </b>{{pc.piano.service_notes}}
         </div>
         <div class="col-lg-6">
           <div class="table-responsive tableBox">
@@ -110,7 +110,7 @@
                         <form name="eventForm" id="eventForm"	action="/thirstifish/service/DBPianistic/addEvent" method="post">
                           <div class="modal-body">
                             <div class="col-lg-12">
-                              <input type="hidden" name="id" value="{{db.piano.id}}">
+                              <input type="hidden" name="id" value="{{pc.piano.id}}">
                               <label>Date: </label>
 			      <input id="date" name="date" size="50" />
 			      <select id="format">
@@ -180,7 +180,7 @@
               </thead>
 
               <tbody>
-                <tr ng-repeat="event in db.service_history | orderBy:'date'">
+                <tr ng-repeat="event in pc.service_history | orderBy:'date'">
                   <td>{{event.date}}</td>
                   <td>{{event.action}}</td>
                   <td>{{event.technician}}</td>

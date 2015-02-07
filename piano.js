@@ -1,7 +1,8 @@
 (function() {
-  var app = angular.module('piano', []);
+  // pianistic.js must run before this
+  var app = angular.module('pianistic');
 
-  app.controller("DBController", ['$http', function($http){
+  app.controller("PianoController", ['$http', function($http){
     var pianistic = this;
     pianistic.piano = {};
     pianistic.service_history = [];
@@ -25,11 +26,7 @@
 
     this.getAge = function(year) {
       return (new Date()).getFullYear() - year;
+
     };
-
-    
-
-
   }]);
-
 })();
