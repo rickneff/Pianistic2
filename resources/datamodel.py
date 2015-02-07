@@ -1058,14 +1058,14 @@ class Todos(object):
 		return "Todos(" + repr(self.criteria) + ")"
 
 	def __str__(self):
-		json = '{'
+		json = '['
 		for i in self.records:
 			json += str(i) + ", "
 
 		if len(self.records) > 0:
 			json = json[:-2]
 
-		json += "}"
+		json += "]"
 
 		return json
 
@@ -1076,6 +1076,46 @@ class Todos(object):
 		return len(self.records)
 
 
+# Enumeration Getters
+def get_piano_types():
+	return _get_enum("piano_type")
+
+def get_piano_makes():
+	return _get_enum("piano_make")
+
+def get_piano_models():
+	return _get_enum("piano_model")
+
+def get_piano_conditions():
+	return _get_enum("piano_condition")
+
+def get_buildings():
+	return _get_enum("building")
+
+def get_room_types():
+	return _get_enum("room_type")
+
+def _get_enum(name):
+	con = db.connect(dbfile)
+	cur = con.cursor()
+
+	sql = "SELECT value FROM " + name + ";"
+	cur.execute(sql)
+
+	results = cur.fetchall()
+	con.close()
+
+	json = '['
+
+	for result in results:
+		json += '"' + result[0] + '", '
+
+	if len(results) > 0:
+		json = json[:-2]
+
+	json += ']'
+
+	return json
 
 # Custom Exceptions ---------------------------------------------
 
@@ -1540,6 +1580,32 @@ if __name__ == "__main__":
 
 	print ""
 
+	print "------------ Enumeration Getters ------------"
+
+	print "Get piano types"
+	print get_piano_types()
+	print
+
+
+	print "Get piano makes"
+	print get_piano_makes()
+	print
+
+	print "Get piano models"
+	print get_piano_models()
+	print
+
+	print "Get piano conditions"
+	print get_piano_conditions()
+	print
+
+	print "Get buildings"
+	print get_buildings()
+	print
+
+	print "Get room types"
+	print get_room_types()
+	print
 
 '''
 We can abstract out a bunch of stuff, because most of the DB reader classes

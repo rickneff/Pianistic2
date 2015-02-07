@@ -189,6 +189,32 @@ def todos(response):
 	return json
 index["todos"] = todos
 
+def enum(response):
+	responsecode = 200
+	content = "application/json"
+	json = ""
+
+	enums = {
+		"piano_type"      : model.get_piano_types,
+		"piano_make"      : model.get_piano_makes,
+		"piano_model"     : model.get_piano_models,
+		"piano_condition" : model.get_piano_conditions,
+		"building"        : model.get_buildings,
+		"room_type"       : model.get_room_types,
+	}
+
+	if response.subpath in enums:
+		json = enums[response.subpath]()
+	else:
+		responsecode = 404
+		json = '{{"error":"Enum {} not found"}}'.format(response.subpath)
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+
+index["enum"] = enum
+
 
 if __name__ == "__main__":
 	for key in index.keys():
