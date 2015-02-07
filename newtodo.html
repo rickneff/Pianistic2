@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="pianistic">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Travis Baker, Trever Meyer, Brady Field">
+	<title>dbPianistic</title>
+
+  <!--favicon-->
+  <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAA
+  AAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAenp6AL29vQD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiAiIgIiIAAAAAAAAAAAAzMwMzMDMzADMzAzMwMzMAMzMDM
+  zAzMwAzMwMzMDMzADMxETMREzMAMzAAMwADMwAzMAAzAAMzADMwADMAAzMAMzAAMwADMwAzMAAzAAMzADMwADMAA
+  zMAMzAAMwADMwAAAAAAAAAACEIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  AAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon" />
+	
+	<!--stylesheets-->
+  <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+  <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+	
+	<!--JS-->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="pianistic.js"></script>
+  <script type="text/javascript" src="todos.js"></script>
+  <script type="text/javascript" src=" buildings.js"></script>
+
+</head>
+<body ng-controller="TodosController as tsc">
+		<div class="container">
+      <!-- Static navbar -->
+      <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">dbPianistic</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="index.html">Current Tasks</a></li>
+            <li><a href="pianos.html">Pianos</a></li>
+            <li><a href="locations.html">Locations</a></li>
+         	<li class="active"><a href="todo.html">To Do</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="addPiano.html">Add Piano</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+<!-- Here is the main part of the page -->
+
+		<form id="submitTodo" name="submitPiano" action="/thirstifish/service/DBPianistic/addNewToDo" method="post">
+			<div class="searchBox">
+			   <div class="search">
+					<label>Building: </label>
+					<div class="controls">
+                 <select id="building" name="building" class="input-large" ng-controller="BuildingsController as bsc">
+                   <option class="option-repeat" ng-repeat="building in bsc.buildings" value="{{building}}">{{building}}</option>
+                 </select>
+               </div>
+            </div>
+            <div class="search">
+			  		<label>Room Number: </label>
+			  		<input type="text" name="room" placeholder="219B">
+            </div>
+            <div class="search">
+			  		<label>Piano Serial #: </label>
+			  		<input type="text" name="serial" placeholder="76565388">
+           	</div>
+           	<div class="search">
+					<label style="margin-top:10px">Notes: </label>
+					<textarea rows="4" name="notes" cols="50"></textarea>
+            </div>
+           	<div class="search">
+					<button style="text-align:right" type="submit" class="btn btn-default">Submit</button>
+	      	</div>
+         </div>
+      </form>
+			
+			<div class="table-responsive tableBox" style="clear: both;">
+              <table class="table table-bordered table-hover table-striped tablesorter toDo">
+                <thead>
+                  <tr>
+                    <th>Building <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'building')"></th>
+                    <th>Room Number <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'room')"></th>
+                    <th>Piano Serial <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'piano_id')"></th>
+                    <th>Notes </th>
+                    <th>Delete </th>
+                  </tr>
+                  <tr ng-repeat="todo in tsc.todos | filter:search | orderBy:tsc.cSort.sortColumn:tsc.cSort.reverse">
+                     <td>{{todo.building}}</td>
+                     <td>{{todo.room}}</td>
+                     <td>{{todo.piano_id}} (maybe get serial...)</td>
+                     <td>{{todo.notes}}</td>
+                     <td>
+                        <form class="delete" id="{{todo.id}}" method="get"
+			      action="/thirstifish/service/DBPianistic/deleteToDo?id=" onsubmit="return deleteForm(this)">
+                           <input type="hidden" name="id" value="{{todo.id}}" />
+                           <input type="submit" value="Delete" class="btn btn-default" />
+                           
+                        </form>
+                     </td>
+                  </tr>
+                </thead>
+              </table>
+         </div>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    
+    <script>
+      var frm1 = $('#submitTodo');
+          frm1.on('submit', function (ev)
+	  {
+             ev.preventDefault();
+             $.ajax(
+	     {
+                  type: frm1.attr('method'),
+                  url: frm1.attr('action'),
+                  data: frm1.serialize() + '\n',
+                  success: function (data)
+	                   {
+                               console.log(data);
+                               localCache().flush("todo");
+                               window.location.reload();
+                           },
+                  error: function(xhr, status, error)
+                  {
+                    alert('There was an error');
+                    console.log(status);
+                    console.log(error);
+                  }
+             });
+          });
+          
+        function deleteForm(object)
+        {
+             $.ajax(
+	     {
+                  type: $(object).attr('method'),
+                  url: $(object).attr('action') + $(object).attr('id'),
+                  success: function (data)
+	                   {
+                               console.log(data);
+                               localCache().flush("todo");
+                               window.location.reload();
+                           },
+                  error: function(xhr, status, error)
+                  {
+                    alert('There was an error');
+                    console.log(status);
+                    console.log(error);
+                  }
+             });
+          
+          return false;
+          }
+          </script>
+
+</body>
+</html>
