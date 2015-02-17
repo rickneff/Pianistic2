@@ -1,3 +1,5 @@
+import datamodel as model
+
 # Resource request handler index
 # After each resource handler function, that function should be added
 # to this dictionary.
@@ -15,17 +17,92 @@ index = {
 # returned in the return value.
 
 # 
-def getpiano(response):
-	response.set_content("text/html")
-	response.set_response(200)
-	data  = "<!DOCTYPE html>"
-	data += "<html><head><title>Piano</title></head>"
-	data += "<body><p>Got a piano with:</p>"
-	data += "<p>" + str(response.query) + "</p></body>"
-	data += "</html>"
-	return data
+def piano(response):
+	responsecode = 200
+	content = "application/json"
+	json = ''
 
-index["getpiano"] = getpiano
+	jform = response.postquery
+
+	try:
+		p = model.Piano(json=jform)
+		p.write()
+
+		json = '{"success":"Wrote piano successfully"}'
+	except ValueError:
+		responsecode = 400
+		json = '{"error":"Invalid JSON object"}'
+	except model.InsufficientDataError as e:
+		responsecode = 400
+		json = '{{"error":"{}"}}'.format(e)
+	except Exception as e:
+		responsecode = 500
+		content = "text/plain"
+		json = "Internal Server Error"
+
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+index["piano"] = piano
+
+def service_record(response):
+	responsecode = 200
+	content = "application/json"
+	json = ''
+
+	jform = response.postquery
+
+	try:
+		s = model.ServiceRecord(json=jform)
+		s.write()
+
+		json = '{"success":"Wrote service record successfully"}'
+	except ValueError:
+		responsecode = 400
+		json = '{"error":"Invalid JSON object"}'
+	except model.InsufficientDataError as e:
+		responsecode = 400
+		json = '{{"error":"{}"}}'.format(e)
+	except Exception as e:
+		responsecode = 500
+		content = "text/plain"
+		json = "Internal Server Error"
+
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+index["service_record"] = service_record
+
+def todo(response):
+	responsecode = 200
+	content = "application/json"
+	json = ''
+
+	jform = response.postquery
+
+	try:
+		t = model.Todo(json=jform)
+		t.write()
+
+		json = '{"success":"Wrote todo successfully"}'
+	except ValueError:
+		responsecode = 400
+		json = '{"error":"Invalid JSON object"}'
+	except model.InsufficientDataError as e:
+		responsecode = 400
+		json = '{{"error":"{}"}}'.format(e)
+	except Exception as e:
+		responsecode = 500
+		content = "text/plain"
+		json = "Internal Server Error"
+
+
+	response.set_content(content)
+	response.set_response(responsecode)
+	return json
+index["todo"] = todo
 
 
 
