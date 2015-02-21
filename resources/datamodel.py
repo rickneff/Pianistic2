@@ -586,7 +586,7 @@ class ServiceRecord(object):
 				if isinstance(v, (int, long, float)):
 					json += str(v)
 				else:
-					json += '"' + v + '"'
+					json += '"' + str(v) + '"'
 				json += ", "
 
 		# Take off the following comma, if there is one
@@ -634,7 +634,7 @@ class ServiceRecord(object):
 		]
 
 		for i in attr:
-			if i not in dir(self):
+			if not getattr(self, i, None):
 				error += i + ", "
 
 		# Throw error if we are missing anything
@@ -886,7 +886,7 @@ class Todo(object):
 				if isinstance(v, (int, long, float)):
 					json += str(v)
 				else:
-					json += '"' + v + '"'
+					json += '"' + str(v) + '"'
 				json += ", "
 
 		# Take off the following comma, if there is one
@@ -932,7 +932,7 @@ class Todo(object):
 		]
 
 		for i in attr:
-			if i not in dir(self):
+			if not getattr(self, i, None):
 				error += i + ", "
 
 		# Throw error if we are missing anything
