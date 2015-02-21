@@ -208,7 +208,7 @@ class Piano(object):
 				if isinstance(v, (int, long, float)):
 					json += str(v)
 				else:
-					json += '"' + v + '"'
+					json += '"' + str(v) + '"'
 				json += ", "
 
 		# Take off the following comma, if there is one
@@ -472,7 +472,6 @@ class Pianos(object):
 			json = json[:-2]
 
 		json += "]"
-
 		return json
 
 	def __getitem__(self, index):
