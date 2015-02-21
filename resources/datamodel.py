@@ -796,7 +796,7 @@ class Todo(object):
 # Instance variables:
 #	Variable Name		Database name		Contents
 #	id			id			Primary key in DB
-#	piano_id		piano_id		Piano ID for record
+#	mfg_serial		piano->mfg_serial	Piano serial number
 #	building		building_id->value	Building note refers to
 #	room			room			Room note refers to
 #	notes			notes			Actual note text
@@ -817,7 +817,7 @@ class Todo(object):
 		args = (id,)
 		sql =   "SELECT "                      + \
 			"    t.id, "                   + \
-			"    t.piano_id, "             + \
+			"    (SELECT mfg_serial FROM piano WHERE id = t.piano_id), " + \
 			"    b.value, "                + \
 			"    t.room, "                 + \
 			"    t.notes "                 + \
@@ -844,7 +844,7 @@ class Todo(object):
 		# SELECT statement.
 		(
 			self.id,
-			self.piano_id,
+			self.mfg_serial,
 			self.building,
 			self.room,
 			self.notes,
@@ -875,7 +875,7 @@ class Todo(object):
 
 		for i in [
 				"id",
-				"piano_id",
+				"mfg_serial",
 				"building",
 				"room",
 				"notes",
@@ -944,7 +944,7 @@ class Todo(object):
 		# Set defaults
 		# Default attributes
 		default = {
-			"piano_id"		: "NULL",
+			"mfg_serial"		: "NULL",
 			"building"		: "None",
 			"room"			: "NULL",
 		}
@@ -961,7 +961,7 @@ class Todo(object):
 			"  notes "
 			") "
 			"VALUES ("
-			"  ?, "							# piano_id
+			"  (SELECT id FROM piano WHERE mfg_serial=?), "		# piano_id
 			"  (SELECT id FROM building WHERE value=?), "		# building_id
 			"  ?, "							# room
 			"  ?"							# notes
@@ -969,7 +969,7 @@ class Todo(object):
 
 		# Setup the argument list
 		args = (
-			self.piano_id,
+			self.mfg_serial,
 			self.building,
 			self.room,
 			self.notes,
