@@ -261,12 +261,12 @@ class Piano(object):
 		]
 
 		for i in attr:
-			if i not in dir(self):
+			if not getattr(self, i, None):
 				error += i + ", "
 
 		# Throw error if we are missing anything
 		if error:
-			error = error[:-2] + " not found"
+			error = "Mandatory attributes " + error[:-2] + " not found."
 			raise InsufficientDataError(error)
 
 
