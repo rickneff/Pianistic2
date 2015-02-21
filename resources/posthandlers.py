@@ -79,7 +79,7 @@ def todo(response):
 	content = "application/json"
 	json = ''
 
-	jform = response.postquery
+	jform = response.postjson
 
 	try:
 		t = model.Todo(json=jform)
@@ -94,9 +94,7 @@ def todo(response):
 		json = '{{"error":"{}"}}'.format(e)
 	except Exception as e:
 		responsecode = 500
-		content = "text/plain"
-		json = "Internal Server Error"
-
+		json = '{"error":"Internal Server Error"}'
 
 	response.set_content(content)
 	response.set_response(responsecode)

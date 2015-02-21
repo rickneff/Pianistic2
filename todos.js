@@ -35,6 +35,29 @@
         $event.currentTarget.parentNode.className = "sorted";
       }
     };
+
+    this.newTodo = function() {
+      if (!document.getElementById("notes").value) {
+        alert("Notes field is mandatory");
+        return;
+      }
+
+      $http.post('/todo', {
+        'building':document.getElementById("building").value,
+        'room':document.getElementById("room").value,
+        'mfg_serial':document.getElementById("mfg_serial").value,
+        'notes':document.getElementById("notes").value
+      }).success(function(data){
+        document.getElementById("submitTodo").reset();
+
+        $http.get('/todos').success(function(data){
+          pianistic.todos = data;
+          pianistic.numTodos = pianistic.todos.length;
+        });
+      }).error(function(data){
+        alert(data['error']);
+      });
+    };
   }]);
 })();
 

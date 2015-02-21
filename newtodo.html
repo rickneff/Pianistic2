@@ -55,7 +55,7 @@
       </div>
 <!-- Here is the main part of the page -->
 
-		<form id="submitTodo" name="submitPiano" action="/thirstifish/service/DBPianistic/addNewToDo" method="post">
+		<form id="submitTodo"> <!-- name="submitPiano" action="/thirstifish/service/DBPianistic/addNewToDo" method="post"> -->
 			<div class="searchBox">
 			   <div class="search">
 					<label>Building: </label>
@@ -67,18 +67,19 @@
             </div>
             <div class="search">
 			  		<label>Room Number: </label>
-			  		<input type="text" name="room" placeholder="219B">
+			  		<input type="text" id="room" name="room" placeholder="219B">
             </div>
             <div class="search">
 			  		<label>Piano Serial #: </label>
-			  		<input type="text" name="serial" placeholder="76565388">
+			  		<input type="text" id="mfg_serial" name="serial" placeholder="76565388">
            	</div>
            	<div class="search">
 					<label style="margin-top:10px">Notes: </label>
-					<textarea rows="4" name="notes" cols="50"></textarea>
+					<textarea rows="4" id="notes" name="notes" cols="50"></textarea>
             </div>
            	<div class="search">
-					<button style="text-align:right" type="submit" class="btn btn-default">Submit</button>
+<!--					<button style="text-align:right" type="submit" class="btn btn-default">Submit</button> -->
+					<button style="text-align:right" class="btn btn-default" ng-click="tsc.newTodo()">Submit</button>
 	      	</div>
          </div>
       </form>
@@ -96,7 +97,7 @@
                   <tr ng-repeat="todo in tsc.todos | filter:search | orderBy:tsc.cSort.sortColumn:tsc.cSort.reverse">
                      <td>{{todo.building}}</td>
                      <td>{{todo.room}}</td>
-                     <td>{{todo.piano_id}} (maybe get serial...)</td>
+                     <td>{{todo.mfg_serial}}</td>
                      <td>{{todo.notes}}</td>
                      <td>
                         <form class="delete" id="{{todo.id}}" method="get"
@@ -118,7 +119,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
     
-    <script>
+<!--    <script>
       var frm1 = $('#submitTodo');
           frm1.on('submit', function (ev)
 	  {
@@ -166,6 +167,6 @@
           return false;
           }
           </script>
-
+-->
 </body>
 </html>
