@@ -60,7 +60,7 @@
               <form action="">
                 <div class="searchBox">
                   <div class="search">
-                    <label>BYUI Inventory ID: </label>
+                    <label>Inventory ID: </label>
                     <input type="text" plac eholder="11271989" ng-model="search.inventory_id"/>
                   </div>
                   <div class="search">
@@ -110,7 +110,7 @@
                 <thead>
                   <tr>
                     <th class="sorted">Location <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, ['building', 'room'])"></th>
-                    <th>BYU-I ID <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'inventory_id')"></th>
+                    <th>Inventory ID <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'inventory_id')"></th>
                     <th>Serial # <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'mfg_serial')"></th>
                     <th>Make <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'make')"></th>
                     <th>Model <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'model')"></th>
@@ -129,7 +129,7 @@
                       <td>{{piano.model}}</td>
                       <td>{{piano.type}}</td>
                       <td>{{piano.year}}</td> 
-                      <td>{{db.getAge(piano.year)}}</td>
+                      <td>{{psc.getAge(piano.year)}}</td>
                       <td>{{piano.condition}}</td>
                     </tr>
                 </tbody>
