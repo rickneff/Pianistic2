@@ -22,7 +22,7 @@ def piano(response):
 	content = "application/json"
 	json = ''
 
-	jform = response.postquery
+	jform = response.postjson
 
 	try:
 		p = model.Piano(json=jform)
@@ -37,8 +37,7 @@ def piano(response):
 		json = '{{"error":"{}"}}'.format(e)
 	except Exception as e:
 		responsecode = 500
-		content = "text/plain"
-		json = "Internal Server Error"
+		json = '{"error":"Internal Server Error"}'
 
 
 	response.set_content(content)
