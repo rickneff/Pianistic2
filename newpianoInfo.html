@@ -91,29 +91,26 @@
               <div style="background:#3C3C3C" class="panel-heading">
                 <div style="color:white" class="panel-title">Service History 
                   <a href="">
-                    <div href="#" class="addButton" data-toggle="modal" data-target="#myModal">Add Event
+                    <div href="#" class="addButton" data-toggle="modal" data-target="#addRecordModal">Add Record
                     </div>
                   </a>
-                      <!-- Button trigger modal -->
-                      <!--<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-                      Launch demo modal
-                      </button> -->
+
+
 
                       <!-- Modal -->
-                  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		       
+                  <div class="modal fade" id="addRecordModal" tabindex="-1" role="dialog" aria-labelledby="addRecordModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                          <h4 class="modal-title" id="myModalLabel">Add Event</h4>
+                          <h4 class="modal-title" id="addRecordModalLabel">Add Record</h4>
                         </div>
-                        <form name="eventForm" id="eventForm"	action="/thirstifish/service/DBPianistic/addEvent" method="post">
+                        <form name="recordForm" id="recordForm"	action="/thirstifish/service/DBPianistic/addEvent" method="post">
                           <div class="modal-body">
                             <div class="col-lg-12">
-                              <input type="hidden" name="id" value="{{pc.piano.id}}">
+                              <input type="hidden" id="piano_id" value="{{pc.piano.id}}">
                               <label>Date: </label>
-			      <input id="date" name="date" size="50" />
+			      <input id="date" size="50" />
 			      <select id="format">
 				<option value="mm/dd/yy">Default - mm/dd/yy</option>
 				<option value="yy-mm-dd">ISO 8601 - yy-mm-dd</option>
@@ -122,17 +119,17 @@
 				<option value="DD, d MM, yy">Full - DD, d MM, yy</option>
 			      </select>
                               <label style="margin-top:10px">Action performed: </label>
-                              <input type="text" name="service" placeho lder="General Service" required/>
+                              <input type="text" id="action" placeho lder="General Service" required/>
                               <label style="margin-top:10px">Performed by: </label>
-                              <input type="text" name="user" placehol der="KH" required/>
+                              <input type="text" id="technician" placehol der="KH" required/>
                               <label>Temperature: </label>
-                              <input type="text" name="temp" placehol der="68"/>
+                              <input type="text" id="temperature" placehol der="68"/>
                               <label>Humidity: </label>
-                              <input type="text" name="hum" placeho lder="50"/>
+                              <input type="text" id="humidity" placeho lder="50"/>
                               <label>Pitch: </label>
-                              <input type="text" name="pitch"/>
+                              <input type="text" id="pitch"/>
                               <label>Reset Service Interval Date?</label>
-                              <input type="checkbox" name="resetInterval" value="rstI" />
+                              <input type="checkbox" id="resetInterval" value="rstI" />
                             </div>
                           </div>
                           <div class="modal-footer">
@@ -142,7 +139,7 @@
                         </form>
 
                         <script type="text/javascript">
-                          var frm = $('#eventForm');
+                          var frm = $('#recordForm');
                           frm.submit(function (ev)
   		                    {
                             ev.preventDefault();
@@ -195,6 +192,7 @@
         </div>
       </div> <!-- class=container-->
     </div> <!-- top navbar container -->
+
   <!--<form id="deletePianoForm" name="deletePianoForm" method="post">
   <div class="container">
     <div class="col-lg-6">
@@ -240,15 +238,17 @@
     <div class="deleteButton">
       <!--changed ng-click to onclick due to javascript scoping errors of changing button functions-->
       <!--ng-click="deletePiano()"-->
-      <button type="button" id="editBtn" data-toggle="modal" data-target="#myModal1" class="deleteButton btn btn-primary" data-dismiss="modal">Edit Piano</button>
+      <button type="button" id="editBtn" data-toggle="modal" data-target="#editModal" class="deleteButton btn btn-primary" data-dismiss="modal">Edit Piano</button>
       <button type="button" id="deleteBtn" onclick="deletePiano()" class="deleteButton btn btn-danger" data-dismiss="modal">Delete Piano</button>
       <input type="hidden" name="id" value="{{currentPiano.piano_pk}}">
-      <div style="text-align:left" class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModal1Label" aria-hidden="true">
+
+
+      <div style="text-align:left" class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModal1Label">Edit Piano</h4>
+              <h4 class="modal-title" id="editModalLabel">Edit Piano</h4>
             </div>
             <form name="updatePianoForm" id="updatePianoForm" action="/thirstifish/service/DBPianistic/updatePiano" method="post">
               <div class="modal-body">
