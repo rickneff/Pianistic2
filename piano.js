@@ -9,21 +9,31 @@
 
     // This gets the number we tacked onto the query string
     // and uses it to get the appropriate piano.
-    var pianoId = window.location.search.substring(1);
-    $http.get('/piano?id=' + pianoId).success(function(data) {
-      pianistic.piano = data;
-      pianistic.piano.age = pianistic.getAge(pianistic.piano.year);
+    pianistic.piano.id = window.location.search.substring(1);
 
-      var lsdate = new Date(pianistic.piano.last_service_date);
-      var days = pianistic.piano.service_interval - Math.floor(Math.abs(new Date() - lsdate) / (1000 * 60 * 60 * 24));
 
-      pianistic.piano.next_service = days;
-    });
+    this.loadPiano = function(id) {
+      $http.get('/piano?id=' + id).success(function(data) {
+        pianistic.piano = data;
+        pianistic.piano.age = pianistic.getAge(pianistic.piano.year);
 
-    $http.get('/service_records?piano_id=' + pianoId).success(function(data) {
-      pianistic.service_history = data;
-    });
+        var lsdate = new Date(pianistic.piano.last_service_date);
+        var days = pianistic.piano.service_interval - Math.floor(Math.abs(new Date() - lsdate) / (1000 * 60 * 60 * 24));
 
+        pianistic.piano.next_service = days;
+      });
+
+    };
+
+    pianistic.loadPiano(pianistic.piano.id);
+
+    this.loadServiceHistory = function(id) {
+      $http.get('/service_records?piano_id=' + id).success(function(data) {
+        pianistic.service_history = data;
+      });
+    };
+
+    pianistic.loadServiceHistory(pianistic.piano.id);
 
     this.addRecord = function() {
       var fields = [
@@ -32,11 +42,14 @@
         'technician',
         'temperature',
         'humidity',
-        'pitch',
-        'resetInterval'
+        'pitch'
       ];
 
       var form = {'piano_id' : pianistic.piano.id}
+      if (document.getElementById("resetInterval").checked) {
+        form["resetInterval"] = "true";
+      }
+
 
       for (field in fields) {
         if (document.getElementById(fields[field]).value != "") {
@@ -46,9 +59,12 @@
 
       $http.post('/service_record', form
       ).success(function(data){
-        $http.get('/service_records?piano_id=' + pianoId).success(function(data) {
-          pianistic.service_history = data;
-        });
+        pianistic.loadServiceHistory(pianistic.piano.id);
+
+        if (document.getElementById("resetInterval").checked) {
+          pianistic.loadPiano(pianistic.piano.id);
+        }
+
         document.getElementById("recordForm").reset();
         $("#addRecordModal").modal('hide');
       }).error(function(data){
@@ -86,19 +102,10 @@
 
       $http.post('/piano', form
       ).success(function(data){
-        $http.get('/piano?id=' + pianoId).success(function(data) {
-          pianistic.piano = data;
-          pianistic.piano.age = pianistic.getAge(pianistic.piano.year);
-
-          var lsdate = new Date(pianistic.piano.last_service_date);
-          var days = pianistic.piano.service_interval - Math.floor(Math.abs(new Date() - lsdate) / (1000 * 60 * 60 * 24));
-
-          pianistic.piano.next_service = days;
-        });
+        pianistic.loadPiano(pianistic.piano.id);
 
         $("#editModal").modal('hide');
       }).error(function(data){
-        console.log(data);
         alert("Error: " + data.error);
       });
     };
