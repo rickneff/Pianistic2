@@ -29,8 +29,10 @@
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
   <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
   <script>
+// We will move this into the addPiano.js application
     $(function() {
        $("#last_service_date").datepicker();
+       $("#last_service_date").datepicker("option", "dateFormat", "yy-mm-dd");
     });
   </script>
 </head>
