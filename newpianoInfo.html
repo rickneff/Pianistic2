@@ -28,11 +28,10 @@
     <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 
     <script>
+// This should get moved into piano.js
        $(function() {
            $("#date").datepicker();
-           $("#format").change(function() {
-             $("#date").datepicker("option", "dateFormat", $(this).val());
-           });
+           $("#date").datepicker("option", "dateFormat", "yy-mm-dd");
          });
     </script>
 
@@ -41,6 +40,12 @@
     <script src="js/tablesorter/tables.js"></script>
     <script type="text/javascript" src="pianistic.js"></script>
     <script type="text/javascript" src="piano.js"></script>
+    <script type="text/javascript" src="buildings.js"></script>
+    <script type="text/javascript" src="roomtypes.js"></script>
+    <script type="text/javascript" src="makes.js"></script>
+    <script type="text/javascript" src="models.js"></script>
+    <script type="text/javascript" src="types.js"></script>
+    <script type="text/javascript" src="conditions.js"></script>
 
   </head>
   <body ng-controller="PianoController as pc">
@@ -105,19 +110,11 @@
                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                           <h4 class="modal-title" id="addRecordModalLabel">Add Record</h4>
                         </div>
-                        <form name="recordForm" id="recordForm"	action="/thirstifish/service/DBPianistic/addEvent" method="post">
+                        <form name="recordForm" id="recordForm"	ng-submit="pc.addRecord()">
                           <div class="modal-body">
                             <div class="col-lg-12">
-                              <input type="hidden" id="piano_id" value="{{pc.piano.id}}">
                               <label>Date: </label>
 			      <input id="date" size="50" />
-			      <select id="format">
-				<option value="mm/dd/yy">Default - mm/dd/yy</option>
-				<option value="yy-mm-dd">ISO 8601 - yy-mm-dd</option>
-				<option value="d M, y">Short - d M, y</option>
-				<option value="d MM, y">Medium - d MM, y</option>
-				<option value="DD, d MM, yy">Full - DD, d MM, yy</option>
-			      </select>
                               <label style="margin-top:10px">Action performed: </label>
                               <input type="text" id="action" placeho lder="General Service" required/>
                               <label style="margin-top:10px">Performed by: </label>
@@ -134,32 +131,9 @@
                           </div>
                           <div class="modal-footer">
                               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                              <input type="submit" class="btn btn-primary" value="Add"/>
+                              <input type="submit" class="btn btn-primary" value="Add"></input>
                           </div>
                         </form>
-
-                        <script type="text/javascript">
-                          var frm = $('#recordForm');
-                          frm.submit(function (ev)
-  		                    {
-                            ev.preventDefault();
-                            $.ajax(
-  		                      {
-                              type: frm.attr('method'),
-                              url: frm.attr('action'),
-                              data: frm.serialize() + '\n',
-                              success: function (data)
-  		                        {
-  		                          localCache().flush("piano");
-  		                          localCache().flush("event");
-                                console.log(data);
-                                // alert(window.location)
-                                window.location.reload();
-                                //document.location.reload();
-                              }
-                            });
-                          });
-                        </script>
                       </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                   </div><!-- /.modal -->
@@ -240,7 +214,7 @@
       <!--ng-click="deletePiano()"-->
       <button type="button" id="editBtn" data-toggle="modal" data-target="#editModal" class="deleteButton btn btn-primary" data-dismiss="modal">Edit Piano</button>
       <button type="button" id="deleteBtn" onclick="deletePiano()" class="deleteButton btn btn-danger" data-dismiss="modal">Delete Piano</button>
-      <input type="hidden" name="id" value="{{currentPiano.piano_pk}}">
+      <input type="hidden" name="id" value="{{pc.piano.id}}">
 
 
       <div style="text-align:left" class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -250,98 +224,94 @@
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h4 class="modal-title" id="editModalLabel">Edit Piano</h4>
             </div>
-            <form name="updatePianoForm" id="updatePianoForm" action="/thirstifish/service/DBPianistic/updatePiano" method="post">
+            <form id="updatePianoForm" ng-submit="pc.updatePiano()">
               <div class="modal-body">
                 <div class="col-lg-12">
-                  <input type="hidden" name="id" value="{{currentPiano.piano_pk}}">
-
                   <div style="float:left; padding: 10px; clear:left">
                     <label>Building: </label>
-                    <select id="building" name="building" class="input-large">
-                      <option ng-selected="{{building == currentPiano.building_name}}" class="option-repeat" ng-repeat="building in buildingNames | orderBy: 'building.building_name'" value="{{building}}">{{building}}</option>
+                    <select id="building" class="input-large" ng-controller="BuildingsController as bsc">
+                      <option ng-selected="{{building == pc.piano.building}}" class="option-repeat" ng-repeat="building in bsc.buildings | orderBy: 'building'" value="{{building}}">{{building}}</option>
                     </select>
                   </div>
                   <div style="float:left; padding:10px">
                     <label>Room #: </label>
-                    <input type="text" name="room" value="{{currentPiano.room_number}}">
+                    <input type="text" id="room" value="{{pc.piano.room}}">
                   </div>
 
                   <div style="float:left; padding:10px; clear:right">
                     <label>Room Type: </label>
-                    <select id="roomType" name="roomType" class="input-large">
-                      <option ng-selected="{{roomType == currentPiano.room_type_text}}" class="option-repeat" ng-repeat="roomType in roomTypeNames" value="{{roomType}}">{{roomType}}</option>
+                    <select id="room_type" class="input-large" ng-controller="RoomTypesController as rtsc">
+                      <option ng-selected="{{roomType == pc.piano.room_type}}" class="option-repeat" ng-repeat="roomType in rtsc.roomtypes" value="{{roomType}}">{{roomType}}</option>
                     </select>
                   </div>
 
                   <div style="float:left; padding:10px; clear:left">
                     <label>Make: </label>
-                    <select id="pianoMake" name="make" class="input-large" disab led>
-                      <option ng-selected="{{make == currentPiano.make_name}}"class="option-repeat" ng-repeat="make in pianoMakes" value="{{make}}">{{make}}</option>
+                    <select id="make" class="input-large" ng-controller="MakesController as msc">
+                      <option ng-selected="{{make == pc.piano.make}}"class="option-repeat" ng-repeat="make in msc.makes" value="{{make}}">{{make}}</option>
                     </select>
                   </div>
                   <div style="float:left; padding:10px">
                     <label>Model: </label>
-                    <select id="model" name="model" class="input-large">
-                      <option ng-selected="{{model == currentPiano.model_name}}" class="option-repeat" ng-repeat="model in modelNames" value="{{model}}">{{model}}</option>
+                    <select id="model" class="input-large" ng-controller="ModelsController as mosc">
+                      <option ng-selected="{{model == pc.piano.model}}" class="option-repeat" ng-repeat="model in mosc.models" value="{{model}}">{{model}}</option>
                     </select>
                   </div>
                   <div style="float:left; padding:10px; clear:right">
                     <label>Type: </label>
-                    <select id="pianoType" name="type" class="input-large">
-                      <option ng-selected="{{type == currentPiano.type_text}}" class="option-repeat" ng-repeat="type in pianoTypes" value="{{type}}">{{type}}</option>
+                    <select id="type" class="input-large" ng-controller="TypesController as tsc">
+                      <option ng-selected="{{type == pc.piano.type}}" class="option-repeat" ng-repeat="type in tsc.types" value="{{type}}">{{type}}</option>
                     </select>
                   </div>
                   <div style="float:left; padding:10px; clear:right">
                     <label>Year: </label>
-                    <input type="text" name="year" value="{{currentPiano.year}}" disa bled>
+                    <input type="text" id="year" value="{{pc.piano.year}}" disa bled>
                   </div>
                   <div style="float:left; padding:10px">
                     <label>Condition: </label>
-                    <select id="condition" name="condition" class="input-large">
-                      <option ng-selected="{{condition == currentPiano.condtion_text}}"class="option-repeat" ng-repeat="condition in conditionNames" value="{{condition}}">{{condition}}</option>
+                    <select id="condition" class="input-large" ng-controller="ConditionsController as csc">
+                      <option ng-selected="{{condition == pc.piano.condtion}}"class="option-repeat" ng-repeat="condition in csc.conditions" value="{{condition}}">{{condition}}</option>
                     </select>
                   </div>
                   <div style="float:left; padding:10px">
                     <label>Serial Number: </label>
-                      <input type="text" name="serial" value="{{currentPiano.mfg_serial}}">
+                      <input type="text" id="mfg_serial" value="{{pc.piano.mfg_serial}}">
                   </div>
                   <div style="float:left; padding:10px; clear:left">
-                    <label>BYUI-ID: </label>
-                    <input type="text" name="BYUIinventoryID" value="{{currentPiano.byui_inventory_id}}">
+                    <label>Inventory ID: </label>
+                    <input type="text" id="inventory_id" value="{{pc.piano.inventory_id}}">
                     
                   </div>
                   <div style="float:left; padding:10px; clear:right">
                     <label>Cost: </label>
-                    <input type="text" name="cost" value="{{currentPiano.cost}}">
+                    <input type="text" id="cost" value="{{pc.piano.cost}}">
                   </div>
                   <div style="float:left; padding:10px">
                     <label>Value: </label>
-                    <input type="text" name="value" value="{{currentPiano.value}}">
+                    <input type="text" id="value" value="{{pc.piano.value}}">
                   </div>
                   
                   <div style="float:left; padding:10px; clear:left">
                     <label>Service Interval: </label>
-                    <input type="text" name="nextServiceInterval" value="{{currentPiano.next_service_interval}}">
+                    <input type="text" id="service_interval" value="{{pc.piano.service_interval}}">
                   </div>
                   <div style="float:left; padding:10px">
-                    <label>Previous Bldg. (if moved): </label>
-                      <select id="previousBuilding" name="previousBuildingIfMoved" class="input-large">
-                         <!-- Needed to make this so the field is blank or null if there is no previous location.-->
-                        <option value="null" selected></option>
-                        <option class="option-repeat" ng-selected="{{building == currentPiano.previous_building_if_moved_name}}" ng-repeat="building in buildingNames" value="{{building}}">{{building}}</option>
+                    <label>Previous Building: </label>
+                      <select id="previous_building" class="input-large" ng-controller="BuildingsController as bsc">
+                        <option class="option-repeat" ng-selected="{{building == pc.piano.previous_building}}" ng-repeat="building in bsc.buildings" value="{{building}}">{{building}}</option>
                       </select>
                   </div>
                   <div style="float:left; padding:10px; clear:right">
-                    <label>Previous Rm (if moved): </label>
-                    <input type="text" name="previousRoomIfMoved" value="{{currentPiano.previous_room_if_moved_number}}"/>
+                    <label>Previous Room: </label>
+                    <input type="text" id="previous_room" value="{{pc.piano.previous_room}}"/>
                   </div>
                   <div style="float:left; padding:10px; clear:left">
                     <label>Service Notes: </label>
-                    <textarea name="futureServiceNotes">{{currentPiano.future_service_notes}}</textarea>
+                    <textarea id="service_notes">{{pc.piano.service_notes}}</textarea>
                   </div>
                   <div style="float:left; padding:10px; clear:right">
                     <label>General Notes: </label>
-                    <textarea name="generalPianoNotes">{{currentPiano.general_piano_notes}}</textarea>
+                    <textarea id="notes">{{pc.piano.notes}}</textarea>
                   </div>
                 </div>
               </div>
@@ -352,25 +322,6 @@
                 </div>
               </div>
             </form>
-            <script type="text/javascript">
-              var frmUP = $('#updatePianoForm');
-	      frmUP.submit(function (ev)
-	      {
-	        ev.preventDefault();
-	        $.ajax(
-	        {
-	           type: frmUP.attr('method'),
-	           url: frmUP.attr('action'),
-	           data: frmUP.serialize() + '\n',
-	           success: function (data)
-	           {
-	              localCache().save("currentP", data);
-	              localCache().flush("piano");
-	              window.location.reload();
-	           }
-	        });
-              });
-	    </script>
           </div>
         </div>
       </div>
