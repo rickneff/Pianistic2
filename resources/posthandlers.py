@@ -50,11 +50,17 @@ def service_record(response):
 	content = "application/json"
 	json = ''
 
-	jform = response.postquery
+	jform = response.postjson
 
 	try:
 		s = model.ServiceRecord(json=jform)
 		s.write()
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# We need to check the resetInterval element (if it
+# exists), and reset the last service date for the piano
+# to the value of the date element, if it is true.
+		print "\033[1;37m!!! Resetting last service date not yet implemented !!!\033[0;37m"
 
 		json = '{"success":"Wrote service record successfully"}'
 	except ValueError:
