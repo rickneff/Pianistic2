@@ -7,10 +7,21 @@
     pianistic.todos = [];
     pianistic.numTodos = 0;
 
-    $http.get('/todos').success(function(data){
-      pianistic.todos = data;
-      pianistic.numTodos = pianistic.todos.length;
-    });
+    this.loadTodos = function() {
+      $http.get('/todos').success(function(data){
+        pianistic.todos = data;
+        pianistic.numTodos = pianistic.todos.length;
+      });
+    };
+
+    pianistic.loadTodos();
+
+    this.delete = function(id) {
+      $http.delete('/todo?id=' + id
+      ).success(function() {
+        pianistic.loadTodos();
+      });
+    };
 
     this.cSort = {sortColumn: 'id', reverse: false};
     this.sort = function($event, column) {
@@ -50,10 +61,7 @@
       }).success(function(data){
         document.getElementById("submitTodo").reset();
 
-        $http.get('/todos').success(function(data){
-          pianistic.todos = data;
-          pianistic.numTodos = pianistic.todos.length;
-        });
+        pianistic.loadTodos();
       }).error(function(data){
         alert(data['error']);
       });

@@ -78,7 +78,6 @@
 					<textarea rows="4" id="notes" name="notes" cols="50"></textarea>
             </div>
            	<div class="search">
-<!--					<button style="text-align:right" type="submit" class="btn btn-default">Submit</button> -->
 					<button style="text-align:right" class="btn btn-default" ng-click="tsc.newTodo()">Submit</button>
 	      	</div>
          </div>
@@ -98,14 +97,9 @@
                      <td>{{todo.building}}</td>
                      <td>{{todo.room}}</td>
                      <td>{{todo.mfg_serial}}</td>
-                     <td>{{todo.notes}}</td>
+                     <td><pre>{{todo.notes}}</pre></td>
                      <td>
-                        <form class="delete" id="{{todo.id}}" method="get"
-			      action="/thirstifish/service/DBPianistic/deleteToDo?id=" onsubmit="return deleteForm(this)">
-                           <input type="hidden" name="id" value="{{todo.id}}" />
-                           <input type="submit" value="Delete" class="btn btn-default" />
-                           
-                        </form>
+                        <button class="btn btn-default" ng-click="tsc.delete(todo.id)">Delete</button>
                      </td>
                   </tr>
                 </thead>
@@ -118,55 +112,5 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
-    
-<!--    <script>
-      var frm1 = $('#submitTodo');
-          frm1.on('submit', function (ev)
-	  {
-             ev.preventDefault();
-             $.ajax(
-	     {
-                  type: frm1.attr('method'),
-                  url: frm1.attr('action'),
-                  data: frm1.serialize() + '\n',
-                  success: function (data)
-	                   {
-                               console.log(data);
-                               localCache().flush("todo");
-                               window.location.reload();
-                           },
-                  error: function(xhr, status, error)
-                  {
-                    alert('There was an error');
-                    console.log(status);
-                    console.log(error);
-                  }
-             });
-          });
-          
-        function deleteForm(object)
-        {
-             $.ajax(
-	     {
-                  type: $(object).attr('method'),
-                  url: $(object).attr('action') + $(object).attr('id'),
-                  success: function (data)
-	                   {
-                               console.log(data);
-                               localCache().flush("todo");
-                               window.location.reload();
-                           },
-                  error: function(xhr, status, error)
-                  {
-                    alert('There was an error');
-                    console.log(status);
-                    console.log(error);
-                  }
-             });
-          
-          return false;
-          }
-          </script>
--->
-</body>
+    </body>
 </html>
