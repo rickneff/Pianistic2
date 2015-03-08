@@ -647,9 +647,9 @@ class ServiceRecord(object):
 		# Default attributes
 		default = {
 			"date"			: "now",
-			"humidity"		: "NULL",
-			"temperature"		: "NULL",
-			"pitch"			: "NULL",
+			"humidity"		: "",
+			"temperature"		: "",
+			"pitch"			: "",
 		}
 
 		for k, v in default.iteritems():
