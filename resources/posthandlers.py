@@ -1,4 +1,5 @@
 import datamodel as model
+import json as js
 
 # Resource request handler index
 # After each resource handler function, that function should be added
@@ -56,11 +57,11 @@ def service_record(response):
 		s = model.ServiceRecord(json=jform)
 		s.write()
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# We need to check the resetInterval element (if it
-# exists), and reset the last service date for the piano
-# to the value of the date element, if it is true.
-		print "\033[1;37m!!! Resetting last service date not yet implemented !!!\033[0;37m"
+		jform = js.loads(jform)
+		if "resetInterval" in jform:
+			p = model.Piano(id=jform['piano_id'])
+			p.last_service_date = "now"
+			p.write()
 
 		json = '{"success":"Wrote service record successfully"}'
 	except ValueError:
@@ -70,9 +71,9 @@ def service_record(response):
 		responsecode = 400
 		json = '{{"error":"{}"}}'.format(e)
 	except Exception as e:
+		print e
 		responsecode = 500
-		content = "text/plain"
-		json = "Internal Server Error"
+		json = '{"error":"Internal Server Error"}'
 
 
 	response.set_content(content)
