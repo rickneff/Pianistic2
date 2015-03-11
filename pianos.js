@@ -54,7 +54,7 @@
     };
 
     this.openPage = function(selectedPiano) {
-      window.open("newpianoInfo.html?" + selectedPiano.id, "_self");
+      window.open("pianoInfo.html?" + selectedPiano.id, "_self");
     };
 
   }]);
