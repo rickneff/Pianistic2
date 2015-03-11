@@ -35,6 +35,18 @@
 
     pianistic.loadServiceHistory(pianistic.piano.id);
 
+    this.delete = function() {
+      if (!confirm("Are you sure you want to delete this piano?")) {
+        return;
+      }
+
+      $http.delete('/piano?id=' + pianistic.piano.id).success(function(data) {
+        window.open("pianos.html", "_self");
+      }).error(function(data){
+        alert(data['error']);
+      });
+    };
+
     this.addRecord = function() {
       var fields = [
         'date',

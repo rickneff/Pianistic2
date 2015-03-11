@@ -213,7 +213,7 @@
       <!--changed ng-click to onclick due to javascript scoping errors of changing button functions-->
       <!--ng-click="deletePiano()"-->
       <button type="button" id="editBtn" data-toggle="modal" data-target="#editModal" class="deleteButton btn btn-primary" data-dismiss="modal">Edit Piano</button>
-      <button type="button" id="deleteBtn" onclick="deletePiano()" class="deleteButton btn btn-danger" data-dismiss="modal">Delete Piano</button>
+      <button type="button" id="deleteBtn" ng-click="pc.delete()" class="deleteButton btn btn-danger" data-dismiss="modal">Delete Piano</button>
       <input type="hidden" name="id" value="{{pc.piano.id}}">
 
 
