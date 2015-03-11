@@ -38,6 +38,10 @@
         alert(data['error']);
       });
     };
+
+    $("#last_service_date").datepicker();
+    $("#last_service_date").datepicker("option", "dateFormat", "yy-mm-dd");
+
   }]);
 })();
 
