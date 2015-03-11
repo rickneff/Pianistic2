@@ -127,5 +127,9 @@
       return (new Date()).getFullYear() - year;
 
     };
+
+    $("#date").datepicker();
+    $("#date").datepicker("option", "dateFormat", "yy-mm-dd");
+
   }]);
 })();
