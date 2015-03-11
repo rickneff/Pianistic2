@@ -28,7 +28,7 @@ def piano(response):
 			responsecode = 400 # Bad Request
 			json = '{"error":"Invalid identifying data"}'
 		else:
-			p = model.Piano(id=query["id"])
+			p = model.Piano(id=response.query["id"])
 			p.delete()
 			json = '{"success":"Deleted piano successfully"}'
 
