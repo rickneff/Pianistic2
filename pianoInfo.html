@@ -76,7 +76,7 @@
           <p><b>Type: </b>{{pc.piano.type}}</p>
           <p><b>Condition: </b>{{pc.piano.condition}}</p>
           <p><b>Cost: $</b>{{pc.piano.cost}}</p>
-          <p><b>Age: </b>{{pc.piano.age}} years</p>
+          <p><b>Age: </b>{{pc.piano.age}} {{pc.piano.age == 1 ? "year" : "years"}}</p>
           <p><b>Service Interval: </b>{{pc.piano.service_interval}} days</p>
           <p><b>Next Service: </b>{{pc.piano.next_service}} days</p>
           <p><b>Service Notes: </b>{{pc.piano.service_notes}}</p>
