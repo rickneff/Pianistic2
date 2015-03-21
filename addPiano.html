@@ -2,21 +2,20 @@
 <html lang="en" ng-app="pianistic">
 <head>
   <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Austin Tooley, Brian Armstrong, Kenneth Heyen">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Rybec Thalin Arethdar" >
   <title>dbPianistic</title>
-
+  
   <!--stylesheets-->
-  <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+  <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" media="screen">
   <link rel="stylesheet" type="text/css" href="stylesheet.css" />
   <link rel="stylesheet" type="text/css" href="calendar.css" />  
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
-  <script src="bootstrap/js/bootstrap.min.js"></script>
-
-<!--  <script type="text/javascript" src="front.js"></script> -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
+  <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+  
   <script type="text/javascript" src="pianistic.js"></script>
   <script type="text/javascript" src="buildings.js"></script>
   <script type="text/javascript" src="roomtypes.js"></script>
@@ -25,13 +24,13 @@
   <script type="text/javascript" src="types.js"></script>
   <script type="text/javascript" src="conditions.js"></script>
   <script type="text/javascript" src="addPiano.js"></script>
-
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
-  <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+  <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 </head>
 <body>
   <div class="container">
-    <!-- Static navbar -->
+  <!-- Static navbar -->
     <div class="navbar navbar-default" role="navigation">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -47,7 +46,7 @@
           <li ><a href="index.html">Current Tasks</a></li>
           <li ><a href="pianos.html">Pianos</a></li>
           <li ><a href="locations.html">Locations</a></li>
-       	<li><a href="todo.html">To Do</a></li>
+          <li><a href="todo.html">To Do</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="active"><a href="addPiano.html">Add Piano</a></li>
@@ -57,169 +56,130 @@
   </div> <!-- /container -->
 
   <div class="container">
-  <div class="col-lg-12">
-	  <h2>Add New Piano</h2>
     <div class="col-lg-12">
-      <form id="submitPiano" ng-controller="AddPianoController as apc"> <!-- name="submitPiano" action="/thirstifish/service/DBPianistic/addNewPiano" method="post"> -->
-        <div class="searchBox">
-          <div class="search">
-            <label>Building: </label>
-            <div class="controls">
-              <select id="building" name="building" class="input-large" ng-controller="BuildingsController as bsc">
-                <option class="option-repeat" ng-repeat="building in bsc.buildings | filter:search | orderBy:'building'" value="{{building}}">{{building}}</option>
-              </select>
+      <h2>Add New Piano</h2>
+      <div class="col-lg-12">
+        <form id="submitPiano" ng-controller="AddPianoController as apc">
+          <div class="searchBox">
+            <div class="search">
+              <label>Building: </label>
+              <div class="controls">
+                <select id="building" name="building" class="input-large" ng-controller="BuildingsController as bsc">
+                  <option class="option-repeat" ng-repeat="building in bsc.buildings | filter:search | orderBy:'building'" value="{{building}}">{{building}}</option>
+                </select>
+              </div>
+            </div>
+          
+            <div class="search">
+              <label>Room #: </label>
+              <input type="text" id="room" name="room"/>
+            </div>
+          
+            <div class="search">
+              <label>Room Type: </label>
+              <div class="controls">
+                <select id="room_type" name="roomType" class="input-large" ng-controller="RoomTypesController as rtsc">
+                  <option class="option-repeat" ng-repeat="roomType in rtsc.roomtypes" value="{{roomType}}">{{roomType}}</option>
+                </select>
+              </div>
+            </div>
+          
+            <div class="search">
+              <label>Make: </label>
+              <div class="controls">
+                <select id="make" name="make" class="input-large" ng-controller="MakesController as msc">
+                  <option class="option-repeat" ng-repeat="make in msc.makes" value="{{make}}">{{make}}</option>
+                </select>
+              </div>
             </div>
           </div>
-
-          <div class="search">
-            <label>Room #: </label>
-            <input type="text" id="room" name="room"/>
-          </div>
-
-          <div class="search">
-            <label>Room Type: </label>
-            <div class="controls">
-              <select id="room_type" name="roomType" class="input-large" ng-controller="RoomTypesController as rtsc">
-                <option class="option-repeat" ng-repeat="roomType in rtsc.roomtypes" value="{{roomType}}">{{roomType}}</option>
-              </select>
+          <div class="searchBox">
+            <div class="search">
+              <label>Model: </label>
+              <div class="controls">
+                <select id="model" name="model" class="input-large" ng-controller="ModelsController as mosc">
+                  <option class="option-repeat" ng-repeat="model in mosc.models" value="{{model}}">{{model}}</option>
+                </select>
+              </div>
             </div>
-          </div>
-
-          <div class="search">
-  	        <label>Make: </label>
-  	        <div class="controls">
-              <select id="make" name="make" class="input-large" ng-controller="MakesController as msc">
-                <option class="option-repeat" ng-repeat="make in msc.makes" value="{{make}}">{{make}}</option>
-              </select>
+            <div class="search">
+              <label>Type: </label>
+              <div class="controls">
+                <select id="type" name="type" class="input-large" ng-controller="TypesController as tsc">
+                  <option class="option-repeat" ng-repeat="type in tsc.types" value="{{type}}">{{type}}</option>
+                </select>
+              </div>
             </div>
-          </div>
-        </div>
-
-        <div class="searchBox">
-          <div class="search">
-  	        <label>Model: </label>
-            <div class="controls">
-              <select id="model" name="model" class="input-large" ng-controller="ModelsController as mosc">
-                <option class="option-repeat" ng-repeat="model in mosc.models" value="{{model}}">{{model}}</option>
-              </select>
-            </div>
-          </div>
-  	        <!--<input type="text" name="model" placeho lder="BSG-001">-->
-        <!--<br/>-->
-          <div class="search">
-            <label>Type: </label>
-            <div class="controls">
-              <select id="type" name="type" class="input-large" ng-controller="TypesController as tsc">
-                <option class="option-repeat" ng-repeat="type in tsc.types" value="{{type}}">{{type}}</option>
-              </select>
-            </div>
-          </div>
-          <div class="search">
-            <label>Year: </label>
+            <div class="search">
+              <label>Year: </label>
               <input type="text" id="year" name="year"  maxlength="4"/>
-          </div>
-          <div class="search">
-            <label>Condition: </label>
-            <div class="controls">
-              <select id="condition" name="condition" class="input-large" ng-controller="ConditionsController as csc">
-                <option class="option-repeat" ng-repeat="condition in csc.conditions" value="{{condition}}">{{condition}}</option>
-              </select>
+            </div>
+            <div class="search">
+              <label>Condition: </label>
+              <div class="controls">
+                <select id="condition" name="condition" class="input-large" ng-controller="ConditionsController as csc">
+                  <option class="option-repeat" ng-repeat="condition in csc.conditions" value="{{condition}}">{{condition}}</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="searchBox">
-          <div class="search">
-            <label>Serial #: </label>
-            <input type="text" id="mfg_serial" name="serial"/>
-          </div>
-          <div class="search">
-            <label>Inventory ID: </label>
+          <div class="searchBox">
+            <div class="search">
+              <label>Serial #: </label>
+              <input type="text" id="mfg_serial" name="serial"/>
+            </div>
+            <div class="search">
+              <label>Inventory ID: </label>
               <input type="text" id="inventory_id" name="InventoryID"/>
+            </div>
+            <div class="search">
+              <label>Cost $: </label>
+              <input type="text" id="cost" name="cost"/>
+            </div>
+            <div class="search">
+              <label>Value $: </label>
+              <input type="text" id="value" name="value"/>
+            </div>
           </div>
-
-          <div class="search">
-		        <label>Cost $: </label>
-		        <input type="text" id="cost" name="cost"/>
+          <div class="searchBox"> 
+            <div class="search">
+              <label>Service Interval: </label>
+              <input type="text" id="service_interval" name="ServiceInterval"/>
+            </div>
+            <div class="search">
+              <label>Previous Building: </label>
+              <select id="previous_building" name="previousBuilding" class="input-large" ng-controller="BuildingsController as bsc">
+                <option class="option-repeat" ng-repeat="building in bsc.buildings  | orderBy:'building'" value="{{building}}">{{building}}</option>
+              </select>
+            </div>
+            <div class="search">
+              <label>Previous Room: </label>
+              <input type="text" id="previous_room" name="previousRoomIfMoved"/>
+            </div>
           </div>
-
-          <div class="search">
-		        <label>Value $: </label>
-		      <input type="text" id="value" name="value"/>
+          <div class="searchBox"> 
+            <div class="search">
+              <label>Last Service Date: </label>
+              <div class="controls">
+                <input id="last_service_date" name="lastService" size="50" />
+              </div>
+            </div>
+            <div style="clear:both"class="search">
+              <label style="margin-top:10px">General Notes: </label>
+              <textarea rows="4" id="notes" name="generalPianoNotes" cols="37"></textarea>
+            </div>
+            <div class="search">
+              <label style="margin-top:10px">Service Notes: </label>
+              <textarea rows="4" id="service_notes" name="futureServiceNotes" cols="37"></textarea>
+            </div>
+            <div style = "clear:both" class="search">
+              <button style="text-align:center" class="btn btn-default" ng-click="apc.addPiano()">Submit</button>
+            </div>
           </div>
-       </div>
-    <div class="searchBox">
-       
-              <div class="search">
-		<label>Service Interval: </label>
-		<input type="text" id="service_interval" name="ServiceInterval"/>
-              </div>
-              <div class="search">
-		<label>Previous Building: </label>
-    <select id="previous_building" name="previousBuilding" class="input-large" ng-controller="BuildingsController as bsc">
-      <option class="option-repeat" ng-repeat="building in bsc.buildings  | orderBy:'building'" value="{{building}}">{{building}}</option>
-    </select>
-  </div>
-  <div class="search">
-		<label>Previous Room: </label>
-		<input type="text" id="previous_room" name="previousRoomIfMoved"/>
-              </div>
-              </div>
-              <div class="searchBox">
-              <!-- I am adding here the last service date. -->
-              <div class="search">
-
-		<label>Last Service Date: </label>
-		<div class="controls">
-		  <input id="last_service_date" name="lastService" size="50" />
-		</div>
-              </div>
-              <!--This is the end of the last service date. -->
-              <div style="clear:both"class="search">
-		<label style="margin-top:10px">General Notes: </label>
-		<textarea rows="4" id="notes" name="generalPianoNotes" cols="37"></textarea>
-              </div>
-              <div class="search">
-		<label style="margin-top:10px">Service Notes: </label>
-		<textarea rows="4" id="service_notes" name="futureServiceNotes" cols="37"></textarea>
-              </div>
-        <div style = "clear:both" class="search">
-<!--	        <input style="text-align:center" type="submit" class="btn btn-default"value = "Submit"/><!--Submit</button>-->
-	        <button style="text-align:center" class="btn btn-default" ng-click="apc.addPiano()">Submit</button>
-        </div>
+        </form>
+      </div>
     </div>
+  
   </div>
-  </div>
-  </form>
-<!--    <script type="text/javascript">
-          var frm = $('#submitPiano');
-          frm.on('submit', function (ev)
-	  {
-             ev.preventDefault();
-             $.ajax(
-	     {
-                  type: frm.attr('method'),
-                  url: frm.attr('action'),
-                  data: frm.serialize() + '\n',
-                  success: function (data)
-	                   {
-                               localCache().flush("piano");
-                               console.log(data);
-                               //alert('data = ' + data);
-                               $.when(getInfo()).then(window.location.reload());
-	                       $(document).ready(function() { window.location.reload(); });
-                           },
-                  error: function(xhr, status, error)
-                  {
-                    alert('There was an error');
-                    console.log(status);
-                    console.log(error);
-                  }
-             });
-          });
-    </script>
--->
-</div>
-</div>
-</div>
 </body>
 </html>
