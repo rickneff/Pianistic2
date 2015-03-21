@@ -24,7 +24,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
     <script type="text/javascript" src="pianistic.js"></script>
     <script type="text/javascript" src="pianos.js"></script>
-
   </head>
   <body ng-controller="PianosController as psc">
     <div class="container">
@@ -51,7 +50,6 @@
           </ul>
         </div><!--/.nav-collapse -->
       </div>
-
       <div class="col-lg-6">
         <div class="panel panel-primary">
           <div class="panel-heading">
@@ -74,9 +72,9 @@
           </div>
           <div class="panel-body">
             <div class="list-group">
-	      <a href="#" class="list-group-item" ng-if="piano.days_until_service < 8 && piano.days_until_service > 0" ng-repeat="piano in psc.pianos | filter:search | orderBy:'days_until_service'" ng-cloak ng-click="psc.openPage(piano)">
-                <span class="badge">{{piano.days_until_service}}</span>
-                <i class="fa fa-calendar"></i> {{piano.building}} {{piano.room}} - {{piano.make}}&nbsp;&nbsp;{{piano.model}}
+              <a href="#" class="list-group-item" ng-if="piano.days_until_service < 8 && piano.days_until_service > 0" ng-repeat="piano in psc.pianos | filter:search | orderBy:'days_until_service'" ng-cloak ng-click="psc.openPage(piano)">
+              <span class="badge">{{piano.days_until_service}}</span>
+              <i class="fa fa-calendar"></i> {{piano.building}} {{piano.room}} - {{piano.make}}&nbsp;&nbsp;{{piano.model}}
               </a>
             </div>
           </div>
@@ -84,12 +82,8 @@
       </div>
     </div> <!-- /container -->
 
-
-    <!-- Bootstrap core JavaScript
-	 ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Bootstrap core JavaScript -->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
-
   </body>
 </html>
