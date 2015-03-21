@@ -17,6 +17,10 @@
     pianistic.loadTodos();
 
     this.delete = function(id) {
+      if (!confirm("Are you sure you want to delete this todo?")) {
+        return;
+      }
+
       $http.delete('/todo?id=' + id
       ).success(function() {
         pianistic.loadTodos();
