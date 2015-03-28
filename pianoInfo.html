@@ -180,7 +180,7 @@
               <tr ng-repeat="event in pc.service_history | orderBy:'date'" ng-click="pc.editRecordModal(event)">
                 <td>{{event.date}}</td>
                 <td>{{event.action | limitTo : 16}}</td>
-                <td>{{event.technician}}</td>
+                <td>{{event.technician | limitTo : 12}}</td>
                 <td>{{event.humidity}}</td>
                 <td>{{event.temperature}}</td>
                 <td>{{event.pitch}}</td>
