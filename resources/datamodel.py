@@ -216,7 +216,7 @@ class Piano(object):
 		if json[-2:] == ', ':
 			json = json[:-2] + "}"
 
-		return json
+		return json.replace("\n", r"\n")
 
 	# Write this object to the DB
 	def write(self):
@@ -594,7 +594,7 @@ class ServiceRecord(object):
 		if json[-2:] == ', ':
 			json = json[:-2] + "}"
 
-		return json
+		return json.replace("\n", r"\n")
 	
 	# Write this object to the DB
 	def write(self):
@@ -894,7 +894,7 @@ class Todo(object):
 		if json[-2:] == ', ':
 			json = json[:-2] + "}"
 
-		return json
+		return json.replace("\n", r"\n")
 	
 	# Write this object to the DB
 	def write(self):
@@ -1114,7 +1114,7 @@ def _get_enum(name):
 
 	json += ']'
 
-	return json
+	return json.replace("\n", r"\n")
 
 # Custom Exceptions ---------------------------------------------
 

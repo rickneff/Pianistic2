@@ -186,10 +186,8 @@ def todos(response):
 
 	response.set_content(content)
 	response.set_response(responsecode)
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# This escaping should really be done in the datamodel, where the
-# JSON is actually being generated.
-	return json.replace("\n", r"\n")
+
+	return json
 index["todos"] = todos
 
 def enum(response):
