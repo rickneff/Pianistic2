@@ -105,7 +105,7 @@
                             <label>Date: </label>
                             <input name="date" class="date" size="50" />
                             <label style="margin-top:10px">Action performed: </label>
-                            <input type="text" name="action" required />
+                            <textarea name="action" required></textarea>
                             <label style="margin-top:10px">Performed by: </label>
                             <input type="text" name="technician" required />
                             <label>Temperature: </label>
@@ -142,7 +142,7 @@
                             <label>Date: </label>
                             <input name="date" class="date" size="50" />
                             <label style="margin-top:10px">Action performed: </label>
-                            <input type="text" name="action" required />
+                            <textarea name="action" required></textarea>
                             <label style="margin-top:10px">Performed by: </label>
                             <input type="text" name="technician" required />
                             <label>Temperature: </label>
@@ -179,7 +179,7 @@
             <tbody>
               <tr ng-repeat="event in pc.service_history | orderBy:'date'" ng-click="pc.editRecordModal(event)">
                 <td>{{event.date}}</td>
-                <td>{{event.action}}</td>
+                <td>{{event.action | limitTo : 16}}</td>
                 <td>{{event.technician}}</td>
                 <td>{{event.humidity}}</td>
                 <td>{{event.temperature}}</td>
