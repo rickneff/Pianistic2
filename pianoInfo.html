@@ -177,7 +177,7 @@
             </thead>
           
             <tbody>
-              <tr ng-repeat="event in pc.service_history | orderBy:'date'" ng-click="pc.editRecordModal($index)">
+              <tr ng-repeat="event in pc.service_history | orderBy:'date'" ng-click="pc.editRecordModal(event)">
                 <td>{{event.date}}</td>
                 <td>{{event.action}}</td>
                 <td>{{event.technician}}</td>

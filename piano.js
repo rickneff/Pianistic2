@@ -57,30 +57,73 @@
         'pitch'
       ];
 
-      var form = {'piano_id' : pianistic.piano.id}
-      if (document.getElementById("resetInterval").checked) {
-        form["resetInterval"] = "true";
+      var form = document.getElementById("recordForm");
+
+      var data = {'piano_id' : pianistic.piano.id}
+      if (form.resetInterval.checked) {
+        data["resetInterval"] = "true";
       }
 
 
       for (field in fields) {
-        if (document.getElementById(fields[field]).value != "") {
-          form[fields[field]] = document.getElementById(fields[field]).value;
+        if (form[fields[field]].value != "") {
+          data[fields[field]] = form[fields[field]].value;
         }
       }
 
-      $http.post('/service_record', form
+      $http.post('/service_record', data
       ).success(function(data){
         pianistic.loadServiceHistory(pianistic.piano.id);
 
-        if (document.getElementById("resetInterval").checked) {
+        if (form.resetInterval.checked) {
           pianistic.loadPiano(pianistic.piano.id);
         }
 
-        document.getElementById("recordForm").reset();
+        form.reset();
         $("#addRecordModal").modal('hide');
       }).error(function(data){
         console.log(data);
+        alert("Error: " + data.error);
+      });
+    };
+
+    this.editRecordModal = function(event) {
+      var form = document.getElementById("editRecordForm");
+
+      form.id.value          = event.id;
+      form.date.value        = event.date;
+      form.action.value      = event.action;
+      form.technician.value  = event.technician;
+      form.temperature.value = event.temperature;
+      form.humidity.value    = event.humidity;
+      form.pitch.value       = event.pitch;
+
+      $("#editRecordModal").modal('show');
+    };
+
+    this.updateRecord = function() {
+      var fields = [
+        'id',
+        'date',
+        'action',
+        'technician',
+        'temperature',
+        'humidity',
+        'pitch'
+      ];
+
+      var form = document.getElementById("editRecordForm");
+      data = {};
+      for (field in fields) {
+        data[fields[field]] = form[fields[field]].value;
+      }
+
+      $http.post('/service_record', data
+      ).success(function(data){
+        pianistic.loadServiceHistory(pianistic.piano.id);
+
+        $("#editRecordModal").modal('hide');
+      }).error(function(data){
         alert("Error: " + data.error);
       });
     };
@@ -109,7 +152,7 @@
       var form = {'id' : pianistic.piano.id};
 
       for (field in fields) {
-        form[fields[field]] = document.getElementById(fields[field]).value;
+        form[fields[field]] = document.getElementById([fields[field]]).value;
       }
 
       $http.post('/piano', form
@@ -128,8 +171,8 @@
 
     };
 
-    $("#date").datepicker();
-    $("#date").datepicker("option", "dateFormat", "yy-mm-dd");
+    $(".date").datepicker();
+    $(".date").datepicker("option", "dateFormat", "yy-mm-dd");
 
   }]);
 })();
