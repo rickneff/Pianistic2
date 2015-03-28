@@ -91,7 +91,7 @@
                   </div>
                 </a>
               
-              <!-- Modal -->
+                <!-- Modal -->
                 <div class="modal fade" id="addRecordModal" tabindex="-1" role="dialog" aria-labelledby="addRecordModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
                     <div class="modal-content">
@@ -99,23 +99,23 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="addRecordModalLabel">Add Record</h4>
                       </div>
-                      <form name="recordForm" id="recordForm"	ng-submit="pc.addRecord()">
+                      <form name="recordForm" id="recordForm" ng-submit="pc.addRecord()">
                         <div class="modal-body">
                           <div class="col-lg-12">
                             <label>Date: </label>
-                            <input id="date" size="50" />
+                            <input name="date" class="date" size="50" />
                             <label style="margin-top:10px">Action performed: </label>
-                            <input type="text" id="action" required />
+                            <input type="text" name="action" required />
                             <label style="margin-top:10px">Performed by: </label>
-                            <input type="text" id="technician" required />
+                            <input type="text" name="technician" required />
                             <label>Temperature: </label>
-                            <input type="text" id="temperature" />
+                            <input type="text" name="temperature" />
                             <label>Humidity: </label>
-                            <input type="text" id="humidity" />
+                            <input type="text" name="humidity" />
                             <label>Pitch: </label>
-                            <input type="text" id="pitch"/>
+                            <input type="text" name="pitch"/>
                             <label>Reset Service Interval Date?</label>
-                            <input type="checkbox" id="resetInterval" value="rstI" />
+                            <input type="checkbox" name="resetInterval" value="rstI" />
                           </div>
                         </div>
                         <div class="modal-footer">
@@ -126,6 +126,42 @@
                     </div><!-- /.modal-content -->
                   </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
+
+                <!-- Modal -->
+                <div class="modal fade" id="editRecordModal" tabindex="-1" role="dialog" aria-labelledby="editRecordModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="editRecordModalLabel">Edit Record</h4>
+                      </div>
+                      <form name="editRecordForm" id="editRecordForm" ng-submit="pc.updateRecord()">
+                        <div class="modal-body">
+                          <div class="col-lg-12">
+                            <input type="hidden" name="id" />
+                            <label>Date: </label>
+                            <input name="date" class="date" size="50" />
+                            <label style="margin-top:10px">Action performed: </label>
+                            <input type="text" name="action" required />
+                            <label style="margin-top:10px">Performed by: </label>
+                            <input type="text" name="technician" required />
+                            <label>Temperature: </label>
+                            <input type="text" name="temperature" />
+                            <label>Humidity: </label>
+                            <input type="text" name="humidity" />
+                            <label>Pitch: </label>
+                            <input type="text" name="pitch"/>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                          <input type="submit" class="btn btn-primary" value="Update" />
+                        </div>
+                      </form>
+                    </div><!-- /.modal-content -->
+                  </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
               </div>
             </div>
           
@@ -141,7 +177,7 @@
             </thead>
           
             <tbody>
-              <tr ng-repeat="event in pc.service_history | orderBy:'date'">
+              <tr ng-repeat="event in pc.service_history | orderBy:'date'" ng-click="pc.editRecordModal($index)">
                 <td>{{event.date}}</td>
                 <td>{{event.action}}</td>
                 <td>{{event.technician}}</td>
