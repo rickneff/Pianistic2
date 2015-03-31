@@ -60,7 +60,7 @@ def service_record(response):
 		jform = js.loads(jform)
 		if "resetInterval" in jform:
 			p = model.Piano(id=jform['piano_id'])
-			p.last_service_date = "now"
+			p.last_service_date = jform["date"]
 			p.write()
 
 		json = '{"success":"Wrote service record successfully"}'
