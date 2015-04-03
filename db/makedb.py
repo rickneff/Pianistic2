@@ -27,7 +27,7 @@ piano_make = [
 	"Baldwin",
 	"Kawai",
 	"Knabe",
-	"Mason & Hamblin",
+	"Mason & Hamlin",
 	"Petrof",
 	"Roland",
 	"Sojin",
@@ -90,6 +90,7 @@ building = [
 room_type = [
 	"Classroom",
 	"Concert Hall",
+	"Green Room",
 	"Lounge",
 	"Office",
 	"Practice Room",
