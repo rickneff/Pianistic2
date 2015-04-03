@@ -87,17 +87,17 @@
               <table class="table table-bordered table-hover table-striped tablesorter toDo">
                 <thead>
                   <tr>
+                    <th>Notes </th>
                     <th>Building <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'building')"></th>
                     <th>Room Number <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'room')"></th>
                     <th>Piano Serial <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'piano_id')"></th>
-                    <th>Notes </th>
                     <th>Delete </th>
                   </tr>
                   <tr ng-repeat="todo in tsc.todos | filter:search | orderBy:tsc.cSort.sortColumn:tsc.cSort.reverse">
+                     <td style="white-space:pre;">{{todo.notes}}</td>
                      <td>{{todo.building}}</td>
                      <td>{{todo.room}}</td>
                      <td>{{todo.mfg_serial}}</td>
-                     <td style="white-space:pre;">{{todo.notes}}</td>
                      <td>
                         <button class="btn btn-default" ng-click="tsc.delete(todo.id)">Delete</button>
                      </td>
