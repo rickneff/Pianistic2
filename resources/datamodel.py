@@ -4,7 +4,7 @@
 import sqlite3 as db
 import json as js
 
-dbfile = "db/sample.db"
+dbfile = "db/pianistic.db"
 
 # Database tables:
 #	piano_type
@@ -1140,7 +1140,7 @@ if __name__ == "__main__":
 	# If this is being run from resources/, then
 	# we have to go back down to webroot before
 	# going into db/.
-	dbfile = "../db/sample.db"
+	dbfile = "../db/pianistic.db"
 
 	# Test looking up a piano by inventory_id
 	p0 = Piano(inventory_id = 8377127);

@@ -1,6 +1,6 @@
 import sqlite3 as db
 
-con = db.connect("sample.db")
+con = db.connect("pianistic.db")
 cur = con.cursor()
 
 # <Enumerations> ------------------------------------------------------
