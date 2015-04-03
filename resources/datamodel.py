@@ -1077,10 +1077,10 @@ class Todos(object):
 
 # Enumeration Getters
 def get_piano_types():
-	return _get_enum("piano_type")
+	return _get_enum("piano_type", True)
 
 def get_piano_makes():
-	return _get_enum("piano_make")
+	return _get_enum("piano_make", True)
 
 def get_piano_models():
 	return _get_enum("piano_model")
@@ -1089,20 +1089,33 @@ def get_piano_conditions():
 	return _get_enum("piano_condition")
 
 def get_buildings():
-	return _get_enum("building")
+	return _get_enum("building", True)
 
 def get_room_types():
-	return _get_enum("room_type")
+	return _get_enum("room_type", True)
 
-def _get_enum(name):
+def _get_enum(name, sortable = False):
 	con = db.connect(dbfile)
 	cur = con.cursor()
 
 	sql = "SELECT value FROM " + name + ";"
+
+	# Sort if necessary
+	if sortable:
+		sql.replace(";", " ORDER BY value;")
+
 	cur.execute(sql)
 
 	results = cur.fetchall()
 	con.close()
+
+	# Move "None" to the beginning of the list
+	if ("None",) in results:
+		results.insert(0, results.pop(results.index(("None",))))
+
+	# Move "Other" to the end of the list
+	if ("Other",) in results:
+		results.append(results.pop(results.index(("Other",))))
 
 	json = '['
 
