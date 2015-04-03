@@ -27,7 +27,7 @@ piano_make = [
 	"Baldwin",
 	"Kawai",
 	"Knabe",
-	"Mason & Hamblin",
+	"Mason & Hamlin",
 	"Petrof",
 	"Roland",
 	"Sojin",
