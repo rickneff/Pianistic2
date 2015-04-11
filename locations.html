@@ -70,7 +70,7 @@
         </div>
         <div class="panel-body">
           <div class="list-group" ng-controller="PianosController as psc">
-            <a href="locationInfo.html" class="list-group-item col-lg-1"
+            <a href="locationInfo.html?{{piano.building}}&{{piano.room}}" class="list-group-item col-lg-1"
               ng-repeat="piano in psc.pianos | filter: {building:lsc.building} | orderBy:'room'">
               {{piano.room}}
             </a>
