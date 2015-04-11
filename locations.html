@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en" ng-app="pianistic">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Austin Tooley, Brian Armstrong, Kenneth Heyen">
+    <title>dbPianistic</title>
+
+  <!--favicon-->
+  <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAA
+  AAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAenp6AL29vQD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiAiIgIiIAAAAAAAAAAAAzMwMzMDMzADMzAzMwMzMAMzMDM
+  zAzMwAzMwMzMDMzADMxETMREzMAMzAAMwADMwAzMAAzAAMzADMwADMAAzMAMzAAMwADMwAzMAAzAAMzADMwADMAA
+  zMAMzAAMwADMwAAAAAAAAAACEIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  AAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon" />
+	
+	<!--stylesheets-->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+	
+	<!--JS-->
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
+	<script src="pianistic.js"></script>
+	<script src="buildings.js"></script>
+	<script src="pianos.js"></script>
+	<script src="locations.js"></script>
+
+</head>
+<body ng-controller="LocationsController as lsc">
+		<div class="container">
+      <!-- Static navbar -->
+      <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">dbPianistic</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li ><a href="index.html">Current Tasks</a></li>
+            <li ><a href="pianos.html">Pianos</a></li>
+            <li class="active"><a href="locations.html">Locations</a></li>
+         	<li><a href="todo.html">To Do</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="addPiano.html">Add Piano</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+  <div class="container">
+    <div class="col-lg-6" ng-controller="BuildingsController as bsc">
+      <h1><strong>Buildings</strong></h1>
+      <select class="input-large" ng-model="buildingSelected"
+                                  ng-init="buildingSelected = 'None'"
+                                  ng-options="building for building in bsc.buildings"
+                                  ng-change="lsc.set(buildingSelected)">
+      </select>
+    </div>
+    <div class="col-lg-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-clock-o"></i>Rooms</h3>
+        </div>
+        <div class="panel-body">
+          <div class="list-group" ng-controller="PianosController as psc">
+            <a href="locationInfo.html" class="list-group-item col-lg-1"
+              ng-repeat="piano in psc.pianos | filter: {building:lsc.building} | orderBy:'room'">
+              {{piano.room}}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>

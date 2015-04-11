@@ -15,6 +15,7 @@
       for (var i = 0; i < pianistic.pianos.length; i++) {
         pianistic.pianos[i].age = pianistic.getAge(pianistic.pianos[i].year)
         pianistic.pianos[i].days_until_service = pianistic.getDaysToService(pianistic.pianos[i]);
+        pianistic.pianos[i].room = parseInt(pianistic.pianos[i].room);
       }
     });
 
