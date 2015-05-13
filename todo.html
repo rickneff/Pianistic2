@@ -46,7 +46,8 @@
             <li><a href="index.html">Current Tasks</a></li>
             <li><a href="pianos.html">Pianos</a></li>
             <li><a href="locations.html">Locations</a></li>
-         	<li class="active"><a href="todo.html">To Do</a></li>
+         	  <li class="active"><a href="todo.html">To Do</a></li>
+            <li><a href="https://www.dropbox.com/sh/y2r05w1m8stnmq4/AABYAcOJGijTPnhFdUq9OQJya?dl=0" target="_blank">Documents</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="addPiano.html">Add Piano</a></li>
@@ -67,11 +68,11 @@
             </div>
             <div class="search">
 			  		<label>Room Number: </label>
-			  		<input type="text" id="room" name="room" placeholder="219B">
+			  		<input type="text" id="room" name="room" placeh older="219B">
             </div>
             <div class="search">
 			  		<label>Piano Serial #: </label>
-			  		<input type="text" id="mfg_serial" name="serial" placeholder="76565388">
+			  		<input type="text" id="mfg_serial" name="serial" placeho lder="76565388">
            	</div>
            	<div class="search">
 					<label style="margin-top:10px">Notes: </label>
@@ -87,17 +88,17 @@
               <table class="table table-bordered table-hover table-striped tablesorter toDo">
                 <thead>
                   <tr>
+                    <th>Notes </th>
                     <th>Building <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'building')"></th>
                     <th>Room Number <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'room')"></th>
                     <th>Piano Serial <span class="glyphicon glyphicon-chevron-down" ng-click="tsc.sort($event, 'piano_id')"></th>
-                    <th>Notes </th>
                     <th>Delete </th>
                   </tr>
                   <tr ng-repeat="todo in tsc.todos | filter:search | orderBy:tsc.cSort.sortColumn:tsc.cSort.reverse">
+                     <td style="white-space:pre;">{{todo.notes}}</td>
                      <td>{{todo.building}}</td>
                      <td>{{todo.room}}</td>
                      <td>{{todo.mfg_serial}}</td>
-                     <td style="white-space:pre;">{{todo.notes}}</td>
                      <td>
                         <button class="btn btn-default" ng-click="tsc.delete(todo.id)">Delete</button>
                      </td>
