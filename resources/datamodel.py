@@ -1077,13 +1077,13 @@ class Todos(object):
 
 # Enumeration Getters
 def get_piano_types():
-	return _get_enum("piano_type", True)
+	return _get_enum("piano_type")
 
 def get_piano_makes():
 	return _get_enum("piano_make", True)
 
 def get_piano_models():
-	return _get_enum("piano_model")
+	return _get_enum("piano_model", True)
 
 def get_piano_conditions():
 	return _get_enum("piano_condition")
@@ -1102,7 +1102,7 @@ def _get_enum(name, sortable = False):
 
 	# Sort if necessary
 	if sortable:
-		sql.replace(";", " ORDER BY value;")
+		sql = sql.replace(";", " ORDER BY value;")
 
 	cur.execute(sql)
 
