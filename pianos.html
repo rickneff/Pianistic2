@@ -60,12 +60,12 @@
         <form action="">
           <div class="searchBox">
             <div class="search">
-              <label>Inventory ID: </label>
-              <input type="text" ng-model="search.inventory_id"/>
+              <label>Building: </label>
+              <input type="text" ng-model="search.building"/>
             </div>
             <div class="search">
-              <label>Type: </label>
-              <input type="text" ng-model="search.type"/>
+              <label>Room #: </label>
+              <input type="text" ng-model="search.room"/>
             </div>
             <div class="search">
               <label>Make: </label>
@@ -76,12 +76,20 @@
               <input type="text" ng-model="search.model"/>
             </div>
             <div class="search">
-              <label>Building: </label>
-              <input type="text" ng-model="search.building"/>
+              <label>Type: </label>
+              <input type="text" ng-model="search.type"/>
             </div>
           </div>
           <br>
           <div class="searchBox">
+            <div class="search">
+              <label>Inventory ID #: </label>
+              <input type="text" ng-model="search.inventory_id"/>
+            </div>
+            <div class="search">
+              <label>Serial #: </label>
+              <input type="text" ng-model="search.mfg_serial"/>
+            </div>
             <div class="search">
               <label>Year: </label>
               <input type="text" ng-model="search.year"/>
@@ -94,14 +102,8 @@
               <label>Condition: </label>
               <input type="text" ng-model="search.condition"/>
             </div>
-            <div class="search">
-              <label>Serial: </label>
-              <input type="text" ng-model="search.mfg_serial"/>
-            </div>
-            <div class="search">
-              <label>Room #: </label>
-              <input type="text" ng-model="search.room"/>
-            </div>
+            
+            
           </div>
         </form>
       </div>
@@ -114,7 +116,8 @@
               <th>Serial # <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'mfg_serial')"></span></th>
               <th>Make <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'make')"></span></th>
               <th>Model <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'model')"></span></th>
-              <th>Type <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'type')"></span></th>
+              <!--<th>Type <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'type')"></span></th>-->
+              <th>Days Left <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'days_until_service')"></span></th>
               <th>Year <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'year')"></span></th>
               <th>Age <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'age')"></span></th>
               <th>Condition <span class="glyphicon glyphicon-chevron-down" ng-click="psc.sort($event, 'condition')"></span></th>
@@ -127,7 +130,8 @@
               <td>{{piano.mfg_serial}}</td>
               <td>{{piano.make}}</td>
               <td>{{piano.model}}</td>
-              <td>{{piano.type}}</td>
+              <!--<td>{{piano.type}}</td>-->
+              <td>{{piano.days_until_service}}</td>
               <td>{{piano.year}}</td> 
               <td>{{psc.getAge(piano.year)}}</td>
               <td>{{piano.condition}}</td>
