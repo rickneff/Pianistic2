@@ -128,6 +128,21 @@
       });
     };
 
+    this.deleteRecord = function() {
+      if (!confirm("Are you sure you want to delete this service record?")) {
+        return;
+      }
+
+      var form = document.getElementById("editRecordForm");
+      var id = form['id'].value;
+
+      $http.delete('/service_record?id=' + id).success(function(data) {
+        window.open("pianoInfo.html?" + pianistic.piano.id, "_self");
+      }).error(function(data){
+        alert(data['error']);
+      });
+    };
+
     this.updatePiano = function() {
       var fields = [
         'building',

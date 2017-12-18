@@ -51,12 +51,14 @@ def service_record(response):
 	json = ''
 
 	try:
-#		s = model.ServiceRecord(json=jform)
-#		s.write()
-		responsecode = 501
-		json = '{"error":"Not implemented"}'
-
-#		json = '{"success":"Wrote service record successfully"}'
+		if type(response.query) is not dict or \
+			"id" not in response.query:
+				responsecode = 400 # Bad Request
+				json = '{"error":"Invalid identifying data"}'
+		else:
+			s = model.ServiceRecord(id=response.query["id"])
+			s.delete()
+			json = '{"success":"Deleted service record successfully"}'
 	except ValueError:
 		responsecode = 400
 		json = '{"error":"Invalid JSON object"}'
