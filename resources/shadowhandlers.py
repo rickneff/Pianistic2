@@ -12,7 +12,7 @@
 # to this dictionary.
 # For an enumeration of resources, run this program as a standalone.
 index = {
-#	resource_name:	handler function
+#  resource_name:  handler function
 }
 
 # Shadow resources (for hiding files)
@@ -25,13 +25,13 @@ index = {
 # Any resources that need to be shadowed should
 # point to this function.
 def shadow(response):
-	response.set_content("text/html")
-	response.set_response(404)
-	data  = "<!DOCTYPE html>"
-	data += "<html><head><title>404 Not Found</title></head>"
-	data += "<body><p>404: Resource not found</p>"
-	data += "</html>"
-	return data
+  response.set_content("text/html")
+  response.set_response(404)
+  data  = "<!DOCTYPE html>"
+  data += "<html><head><title>404 Not Found</title></head>"
+  data += "<body><p>404: Resource not found</p>"
+  data += "</html>"
+  return data
 
 # Hide the db directories that may contain sqlite or other
 # database files.
@@ -45,5 +45,5 @@ index["resources"] = shadow
 
 
 if __name__ == "__main__":
-	for key in index.keys():
-		print key + " : " + str(index[key])
+  for key in index.keys():
+    print(key + " : " + str(index[key]))
