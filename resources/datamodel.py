@@ -58,7 +58,6 @@ class Piano(object):
     # Initialize DB connection
     # and set a cursor
     global dbfile
-    dbfile = '/Users/rneff/Downloads/Pianistic2/db/pianistic.db'
     try:
       self.con = db.connect(dbfile)
       self.cur = self.con.cursor()
