@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="Rybec Thalin Arethdar" >
   <title>dbPianistic</title>
-  
+
   <!--favicon-->
   <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAA
   AAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAenp6AL29vQD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -15,18 +15,18 @@
   zAzMwAzMwMzMDMzADMxETMREzMAMzAAMwADMwAzMAAzAAMzADMwADMAAzMAMzAAMwADMwAzMAAzAAMzADMwADMAA
   zMAMzAAMwADMwAAAAAAAAAACEIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   AAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon" />
-  
+
   <!--stylesheets-->
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" media="screen">
   <link rel="stylesheet" type="text/css" href="stylesheet.css" />
-  
+
   <!--JS-->
   <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
-  
+
   <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
-  
+
   <!-- Page Specific Plugins -->
   <script type="text/javascript" src="js/tablesorter/jquery.tablesorter.js"></script>
   <script type="text/javascript" src="js/tablesorter/tables.js"></script>
@@ -65,7 +65,7 @@
         </ul>
       </div><!--/.nav-collapse -->
     </div>
-  
+
     <div class="container">
       <div class="col-lg-6">
         <h1><b>Inventory ID:</b> {{pc.piano.inventory_id}}</h1>
@@ -86,12 +86,12 @@
         <div class="table-responsive tableBox">
           <table class="table table-bordered table-hover table-striped historyTable">
             <div style="background:#3C3C3C" class="panel-heading">
-              <div style="color:white" class="panel-title">Service History 
+              <div style="color:white" class="panel-title">Service History
                 <a href="">
                   <div class="addButton" data-toggle="modal" data-target="#addRecordModal">Add Record
                   </div>
                 </a>
-              
+
                 <!-- Modal -->
                 <div class="modal fade" id="addRecordModal" tabindex="-1" role="dialog" aria-labelledby="addRecordModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
@@ -105,18 +105,23 @@
                           <div class="col-lg-12">
                             <label>Date: </label>
                             <input name="date" class="date" size="50" />
-                            <label style="margin-top:10px">Action performed: </label>
-                            <textarea name="action" required></textarea>
+
                             <label style="margin-top:10px">Performed by: </label>
                             <input type="text" name="technician" required />
+                            <label>Pitch: </label>
+                            <input type="text" name="pitch"/>
+                            <label style="margin-top:10px">Action performed: </label>
+                            <textarea name="action" required></textarea>
                             <label>Temperature: </label>
                             <input type="text" name="temperature" />
                             <label>Humidity: </label>
                             <input type="text" name="humidity" />
-                            <label>Pitch: </label>
-                            <input type="text" name="pitch"/>
+
+
+
+
                             <label>Reset Service Interval Date?</label>
-                            <input type="checkbox" name="resetInterval" value="rstI" />
+                            <input type="checkbox" name="resetInterval" value="rstI" checked="checked" />
                           </div>
                         </div>
                         <div class="modal-footer">
@@ -166,7 +171,7 @@
 
               </div>
             </div>
-          
+
             <thead>
               <tr>
                 <th>Date </th>
@@ -177,9 +182,9 @@
                 <th>Pitch</th>
               </tr>
             </thead>
-          
+
             <tbody>
-              <tr ng-repeat="event in pc.service_history | orderBy:'date'" ng-click="pc.editRecordModal(event)">
+              <tr ng-repeat="event in pc.service_history | orderBy:'date' | limitTo:-15" ng-click="pc.editRecordModal(event)">
                 <td>{{event.date}}</td>
                 <td>{{event.action | limitTo : 16}}{{event.action.length > 16 ? '...' : ''}}</td>
                 <td>{{event.technician | limitTo : 10}}{{event.technician.length > 10 ? '...' : ''}}</td>
@@ -198,7 +203,7 @@
     <button type="button" id="editBtn" data-toggle="modal" data-target="#editModal" class="deleteButton btn btn-primary" data-dismiss="modal">Edit Piano</button>
     <button type="button" id="deleteBtn" ng-click="pc.delete()" class="deleteButton btn btn-danger" data-dismiss="modal">Delete Piano</button>
     <input type="hidden" name="id" value="{{pc.piano.id}}" />
-  
+
     <div style="text-align:left" class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
